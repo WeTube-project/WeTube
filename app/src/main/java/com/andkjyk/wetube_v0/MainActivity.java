@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private class FABClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, RoomActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
             startActivity(intent);
         }
     }

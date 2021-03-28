@@ -14,6 +14,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private ImageView left_icon;
     Fragment frag_playlist, frag_users, frag_chat;
+    String room_title, room_code, host_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +22,20 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         left_icon = findViewById(R.id.left_icon);
-        left_icon.setOnClickListener(new View.OnClickListener()
-        {
+
+        Intent intent = getIntent();
+        String SenderActivity = intent.getStringExtra("ActivityName");
+        if(SenderActivity.equals("AddRoomActivity")){
+            // 재생목록에 추가하는 팝업 띄우고, 확인 누르면 AddPlaylistActivity로 인텐트 보냄
+            System.out.println("AddRoomActivity로부터 옴");
+        }
+        room_title = intent.getStringExtra("roomTitle");
+        room_code = intent.getStringExtra("roomCode");
+        host_name = intent.getStringExtra("hostName");
+
+        left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -40,7 +50,6 @@ public class RoomActivity extends AppCompatActivity {
         TabLayout tabs = (TabLayout) findViewById(R.id.tab_layout);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();

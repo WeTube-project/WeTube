@@ -6,9 +6,9 @@
 
     <ImageView
         android:id="@+id/left_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="5dp"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_left" />
 
