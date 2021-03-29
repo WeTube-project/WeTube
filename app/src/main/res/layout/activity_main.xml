@@ -50,12 +50,13 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/room_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="15dp"
             android:scrollbars="vertical"
-            />
+            android:paddingBottom="100dp"
+            android:clipToPadding="false"/>
 
     </LinearLayout>
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/main_item"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/room_thumbnail"
+        android:layout_width="180dp"
+        android:layout_height="135dp"
+        android:layout_margin="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="#7E7E7E"/>
+
+    <TextView
+        android:id="@+id/tv_room_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="방 제목"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/room_thumbnail"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="25dp"/>
+
+    <TextView
+        android:id="@+id/tv_headcount"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_room_title"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/circle"
+        android:gravity="top|center"
+        android:paddingTop="1dp"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="210dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintStart_toStartOf="@id/tv_room_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_room_title">
+        <TextView
+            android:id="@+id/tv_video_name_playing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="빈센조 슬기로운 의사생활 어쩌구 저쩌구 dkdkdk"
+            android:textSize="20sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
