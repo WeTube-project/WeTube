@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+
+import com.andkjyk.wetube_v0.Adapter.MainAdapter;
+import com.andkjyk.wetube_v0.Model.MainItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;

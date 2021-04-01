@@ -1,4 +1,4 @@
-package com.andkjyk.wetube_v0;
+package com.andkjyk.wetube_v0.Model;
 
 public class MainItem {
     private String title, headcount, videoName;

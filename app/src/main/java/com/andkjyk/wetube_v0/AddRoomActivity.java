@@ -59,7 +59,7 @@ public class AddRoomActivity extends AppCompatActivity {
                 intent.putExtra("roomTitle", room_title);
                 intent.putExtra("roomCode", room_code);
                 intent.putExtra("hostName", host_name);
-                intent.putExtra("ActivityName", "AddRoomActivity");
+                intent.putExtra("ActivityName", "AddRoom");
                 startActivityForResult(intent, ADDROOM_REQUEST_CODE);
             }
         });

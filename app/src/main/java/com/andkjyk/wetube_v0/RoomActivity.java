@@ -14,7 +14,8 @@ public class RoomActivity extends AppCompatActivity {
 
     private ImageView left_icon;
     Fragment frag_playlist, frag_users, frag_chat;
-    String room_title, room_code, host_name;
+    String room_title, room_code, host_name, user_name;
+    int room_pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +26,19 @@ public class RoomActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String SenderActivity = intent.getStringExtra("ActivityName");
-        if(SenderActivity.equals("AddRoomActivity")){
+        if(SenderActivity.equals("AddRoom")){
             // 재생목록에 추가하는 팝업 띄우고, 확인 누르면 AddPlaylistActivity로 인텐트 보냄
             System.out.println("AddRoomActivity로부터 옴");
+            room_title = intent.getStringExtra("roomTitle");
+            room_code = intent.getStringExtra("roomCode");
+            host_name = intent.getStringExtra("hostName");
+        } else if(SenderActivity.equals("Main")){
+            user_name = intent.getStringExtra("userName");
+            room_pos = intent.getIntExtra("roomPos", -1);
+        } else{
+            System.out.println("RoomActivity가 intent를 제대로 받아오지 못함");
         }
-        room_title = intent.getStringExtra("roomTitle");
-        room_code = intent.getStringExtra("roomCode");
-        host_name = intent.getStringExtra("hostName");
+
 
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textCursorDrawable">@drawable/dialog_cursur</item>
+    </style>
+</resources>
