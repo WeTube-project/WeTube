@@ -15,6 +15,7 @@ public class RoomActivity extends AppCompatActivity {
     private ImageView left_icon;
     Fragment frag_playlist, frag_users, frag_chat;
     String room_title, room_code, host_name, user_name;
+    boolean isHost;
     int room_pos;
 
     @Override
@@ -32,6 +33,7 @@ public class RoomActivity extends AppCompatActivity {
             room_title = intent.getStringExtra("roomTitle");
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
+            isHost = true;
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
             room_pos = intent.getIntExtra("roomPos", -1);
@@ -70,6 +72,16 @@ public class RoomActivity extends AppCompatActivity {
                     selected = frag_playlist;
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.room_frame, selected).commit();
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isHost", isHost);
+                if(isHost == true){
+                    bundle.putString("host_name", host_name);
+                }else{
+                    bundle.putString("user_name", user_name);
+                }
+
+                selected.setArguments(bundle);
             }
 
             @Override

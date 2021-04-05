@@ -31,9 +31,12 @@
         android:id="@+id/rv_search_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="vertical"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:clipToPadding="false"
+        android:paddingBottom="150dp">
     </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

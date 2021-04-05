@@ -71,12 +71,12 @@ public class PlaylistFragment extends Fragment {
         ArrayList<String> listPlVideoName = new ArrayList<>();
         ArrayList<String> listPlPublisher = new ArrayList<>();
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 6; i++){
             listPlVideoName.add(i+"번째 영상 가나다라마바사아자차카타파하가나다라마바사아자차");
             listPlPublisher.add(i+"번째 게시자 아야어여오요우유으이");
         }
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 6; i++){
             PlaylistItem data = new PlaylistItem();
             System.out.println("정보: "+listPlVideoName.get(i)+" "+listPlPublisher.get(i));
             data.setPlVideoName(listPlVideoName.get(i));
