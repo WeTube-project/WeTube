@@ -44,7 +44,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/sendBtn"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-
+                android:textCursorDrawable="@drawable/dialog_cursur"
                 android:backgroundTint="@color/colorPrimary"
                 android:hint="실시간 채팅에 참여하세요."
                 android:inputType="text"

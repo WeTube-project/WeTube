@@ -71,6 +71,9 @@ public class ChatFragment extends Fragment {
             //room_title = intent.getStringExtra("roomTitle");
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
+            MessageData data = new MessageData("ENTER", host_name, room_code,host_name+"님이 입장하셨습니다.", System.currentTimeMillis());
+            addChat(data);
+            chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
             room_pos = intent.getIntExtra("roomPos", -1);
