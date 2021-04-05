@@ -21,6 +21,8 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("onCreate 시작");
         setContentView(R.layout.activity_room);
 
         left_icon = findViewById(R.id.left_icon);
@@ -37,7 +39,9 @@ public class RoomActivity extends AppCompatActivity {
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
             room_pos = intent.getIntExtra("roomPos", -1);
-        } else{
+        } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
+            // 백엔드 작업 후 수정
+        } else {
             System.out.println("RoomActivity가 intent를 제대로 받아오지 못함");
         }
 
@@ -64,13 +68,15 @@ public class RoomActivity extends AppCompatActivity {
                 int position = tab.getPosition();
 
                 Fragment selected = null;
-                if(position == 0){
+
+                if (position == 0) {
                     selected = frag_chat;
-                }else if (position == 1){
+                } else if (position == 1) {
                     selected = frag_users;
-                }else if (position == 2){
+                } else if (position == 2) {
                     selected = frag_playlist;
                 }
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.room_frame, selected).commit();
 
                 Bundle bundle = new Bundle();

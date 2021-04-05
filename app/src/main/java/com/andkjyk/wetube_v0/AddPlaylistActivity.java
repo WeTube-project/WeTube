@@ -33,6 +33,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 Intent intent = new Intent(AddPlaylistActivity.this, RoomActivity.class);
+                intent.putExtra("ActivityName", "AddPlaylist"); // RoomActivity에서 ActivityName으로 분기처리 했기 때문에 필요.. 없으면 에러
                 startActivity(intent);
             }
         });
