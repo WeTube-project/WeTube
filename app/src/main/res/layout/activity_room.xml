@@ -8,13 +8,20 @@
     tools:context=".RoomActivity">
 
     <include layout="@layout/bar_room" android:id="@+id/room_bar"/>
-
+<!--
     <ImageView
         android:id="@+id/video"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:background="@color/gray"
         android:backgroundTint="@color/gray"
+        app:layout_constraintTop_toBottomOf="@+id/room_bar"/>
+-->
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:showYouTubeButton="false"
         app:layout_constraintTop_toBottomOf="@+id/room_bar"/>
 
     <com.google.android.material.tabs.TabLayout

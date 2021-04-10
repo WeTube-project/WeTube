@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -53,6 +57,20 @@ public class RoomActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        // YouTube Video 띄우는 부분
+        YouTubePlayerView youTubePlayerView = findViewById(R.id.video);
+        getLifecycle().addObserver(youTubePlayerView);
+
+        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                String videoId = "OvuNv834ja0";
+                youTubePlayer.loadVideo(videoId, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
+            }
+        });
+
 
         frag_chat = new ChatFragment();
         frag_users = new UsersFragment();

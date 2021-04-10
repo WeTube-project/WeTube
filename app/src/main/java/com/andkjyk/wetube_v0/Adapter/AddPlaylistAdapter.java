@@ -11,13 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andkjyk.wetube_v0.Model.PlaylistItem;
+import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.andkjyk.wetube_v0.R;
+import com.bumptech.glide.Glide;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.ViewHolder>{
 
-    private ArrayList<PlaylistItem> searchedList = null;
+    private ArrayList<SearchedVideoItem> searchedList = null;
     Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,12 +39,12 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
         }
     }
 
-    public AddPlaylistAdapter(Context context, ArrayList<PlaylistItem> searchedList) {
+    public AddPlaylistAdapter(Context context, ArrayList<SearchedVideoItem> searchedList) {
         this.searchedList = searchedList;
         this.context = context;
     }
 
-    public void addItems(ArrayList<PlaylistItem> items){
+    public void addItems(ArrayList<SearchedVideoItem> items){
         this.searchedList = items;
     }
 
@@ -52,10 +58,13 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PlaylistItem plItem = searchedList.get(position);
+        SearchedVideoItem plItem = searchedList.get(position);
 
-        holder.tv_pl_video_name.setText(plItem.getPlVideoName());
-        holder.tv_pl_publisher.setText(plItem.getPlPublisher());
+        holder.tv_pl_video_name.setText(plItem.getTitle());
+        holder.tv_pl_publisher.setText(plItem.getPublisher());
+
+        String url = plItem.getThumbnailURL();
+        Glide.with(holder.itemView.getContext()).load(url).into(holder.pl_thumbnail);
     }
 
     @Override
