@@ -96,6 +96,8 @@ public class AddPlaylistActivity extends AppCompatActivity {
                     }
                 }.start();
 
+                searchView.clearFocus();
+
                 return true;
             }
 

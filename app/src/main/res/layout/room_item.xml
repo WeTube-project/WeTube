@@ -7,9 +7,10 @@
 
     <ImageView
         android:id="@+id/room_thumbnail"
-        android:layout_width="180dp"
-        android:layout_height="120dp"
-        android:layout_margin="15dp"
+        android:layout_width="160dp"
+        android:layout_height="89dp"
+        android:scaleType="centerCrop"
+        android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="#7E7E7E"/>
@@ -23,8 +24,8 @@
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@id/room_thumbnail"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginVertical="25dp"/>
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:id="@+id/tv_headcount"
@@ -32,7 +33,7 @@
         android:layout_height="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_room_title"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/circle"
         android:gravity="top|center"
         android:paddingTop="1dp"
@@ -44,16 +45,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="210dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="180dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintStart_toStartOf="@id/tv_room_title"
         app:layout_constraintTop_toBottomOf="@id/tv_room_title">
         <TextView
             android:id="@+id/tv_video_name_playing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="빈센조 슬기로운 의사생활 어쩌구 저쩌구 dkdkdk"
-            android:textSize="20sp"
+            android:text="시청중인 동영상 제목"
+            android:textSize="18sp"
             android:maxLines="2"
             android:ellipsize="end"
             android:layout_marginTop="10dp"/>

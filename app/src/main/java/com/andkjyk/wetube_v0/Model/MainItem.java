@@ -1,7 +1,7 @@
 package com.andkjyk.wetube_v0.Model;
 
 public class MainItem {
-    private String title, headcount, videoName;
+    private String title, headcount, videoName, thumbnail;
 
     public String getTitle(){
         return title;
@@ -15,6 +15,8 @@ public class MainItem {
         return videoName;
     }
 
+    public String getThumbnail() { return thumbnail; }
+
     public void setTitle(String title){
         this.title = title;
     }
@@ -26,4 +28,6 @@ public class MainItem {
     public void setVideoName(String videoName){
         this.videoName = videoName;
     }
+
+    public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
 }

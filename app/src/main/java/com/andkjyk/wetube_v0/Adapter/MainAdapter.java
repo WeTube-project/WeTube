@@ -27,6 +27,7 @@ import com.andkjyk.wetube_v0.MainActivity;
 import com.andkjyk.wetube_v0.Model.MainItem;
 import com.andkjyk.wetube_v0.R;
 import com.andkjyk.wetube_v0.RoomActivity;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -153,6 +154,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.tv_room_title.setText(mainItem.getTitle());
         holder.tv_headcount.setText(mainItem.getHeadcount());
         holder.tv_video_name_playing.setText(mainItem.getVideoName());
+        String url = mainItem.getThumbnail();
+        Glide.with(holder.itemView.getContext()).load(url).into(holder.room_thumbnail);
     }
 
     @Override

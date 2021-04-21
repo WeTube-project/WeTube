@@ -1,6 +1,7 @@
 package com.andkjyk.wetube_v0;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Html;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -44,19 +46,28 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> listTitle = new ArrayList<>();
         ArrayList<String> listHeadcount = new ArrayList<>();
         ArrayList<String> listVideoName = new ArrayList<>();
+        ArrayList<String> listThumbnail = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++){
-            listTitle.add("방 제목 "+i);
+        for(int i = 0; i < 1; i++){
+            listTitle.add("같이봐요~~");
             listHeadcount.add(15+"");
-            listVideoName.add("동영상"+i+" 제목");
+            String title = "[놀면 뭐하니?] 유야호가 쏘아 올린 왕의 귀환\uD83E\uDD34 한 클립에 모아보기ㅣ#SG워너비\u200B #유야호\u200B #엠뚜루마뚜루\u200B MBC210417방송";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                title = String.valueOf(Html.fromHtml(title));
+            }
+            listVideoName.add(title);
+            listThumbnail.add("https://i.ytimg.com/vi/wV81QXfN5O8/hqdefault.jpg");
         }
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 1; i++){
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MainItem data = new MainItem();
             data.setTitle(listTitle.get(i));
             data.setHeadcount(listHeadcount.get(i));
             data.setVideoName(listVideoName.get(i));
+            data.setThumbnail(listThumbnail.get(i));
 
             // 각 값이 들어간 data를 adapter에 추가합니다.
             mainItemList.add(data);

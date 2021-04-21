@@ -12,7 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andkjyk.wetube_v0.Model.PlaylistItem;
+import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.andkjyk.wetube_v0.R;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -40,9 +42,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.context = context;
     }
 
-    public void addItems(ArrayList<PlaylistItem> items){
-        this.plList = items;
-    }
+    //public void addItems(ArrayList<PlaylistItem> items){ this.plList = items; }
+    public void addItem(PlaylistItem item){ plList.add(item); }
 
     @NonNull
     @Override
@@ -58,6 +59,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         holder.tv_pl_video_name.setText(plItem.getPlVideoName());
         holder.tv_pl_publisher.setText(plItem.getPlPublisher());
+
+        String url = plItem.getPlThumbnailURL();
+        Glide.with(holder.itemView.getContext()).load(url).into(holder.pl_thumbnail);
     }
 
     @Override
