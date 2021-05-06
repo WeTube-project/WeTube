@@ -14,9 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class AddRoomActivity extends AppCompatActivity {
@@ -28,6 +42,52 @@ public class AddRoomActivity extends AppCompatActivity {
     private EditText code, room_title_input, host_name_input;
     boolean isCodeEntered, isTitleEntered, isHostNameEntered;
     String room_code, room_title, host_name;
+
+    private void postRequest() {
+        final String data = "{"+
+                "\"title\"" + "\"" + room_title + "\","+
+                "\"code\"" + "\"" + room_code + "\","+
+                "\"host\"" + "\"" + host_name +"\","+
+                "}";
+        String url = "http://3.37.36.38:3000/";
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    Toast.makeText(getApplicationContext(), obj.toString(), Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }){
+              @Override
+              public String getBodyContentType(){
+                  return "text/html;charset=utf-8";
+              }
+
+              @Override
+            public byte[] getBody() throws  AuthFailureError {
+                  try {
+                      return data == null ? null : data.getBytes("utf-8");
+                  } catch (UnsupportedEncodingException e) {
+                      return null;
+                  }
+              }
+        };
+        requestQueue.add(stringRequest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +120,7 @@ public class AddRoomActivity extends AppCompatActivity {
                 intent.putExtra("roomCode", room_code);
                 intent.putExtra("hostName", host_name);
                 intent.putExtra("ActivityName", "AddRoom");
+                postRequest();
                 startActivityForResult(intent, ADDROOM_REQUEST_CODE);
             }
         });
