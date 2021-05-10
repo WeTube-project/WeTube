@@ -104,6 +104,19 @@ public class PlaylistFragment extends Fragment {
             listPlThumbnailURL.add("https://i.ytimg.com/vi/wV81QXfN5O8/hqdefault.jpg");
         }
 
+        for(int i = 0; i < 1; i++){
+            String title = "[놀면 뭐하니?] 편집자가 연속 듣기 하고 싶어 모아온,,, MSG워너비 12인 참가자 블라인드 무대 한번에 몰아보기!!ㅣ#MSG워너비\u200B #유야호\u200B MBC210501방송";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                title = String.valueOf(Html.fromHtml(title));
+            }
+            listPlVideoName.add(title);
+            listPlPublisher.add("엠뚜루마뚜루 : MBC 공식 종합 채널");
+            listPlVideoId.add("wV81QXfN5O8");
+            listPlThumbnailURL.add("https://i.ytimg.com/vi/_Io-eJJyIWA/hqdefault.jpg");
+        }
+
         for(int i = 0; i < listPlVideoName.size(); i++){
             PlaylistItem data = new PlaylistItem();
             //System.out.println("정보: "+listPlVideoName.get(i)+" "+listPlPublisher.get(i));

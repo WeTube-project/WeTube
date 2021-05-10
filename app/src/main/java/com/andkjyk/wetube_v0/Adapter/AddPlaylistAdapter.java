@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.andkjyk.wetube_v0.R;
 import com.andkjyk.wetube_v0.RoomActivity;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -60,19 +64,21 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
 
                         System.out.println("결과: "+thumbnailUrl);
 
+                        String sTitle = null;
                         AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext(), R.style.AlertDialogStyle);
                         if(title.length() > 35){
-                            title = title.substring(0, 35)+"...";
+                            sTitle = title.substring(0, 35)+"...";
+                        } else{
+                            sTitle = title;
                         }
-                        String finalTitle = title;
-                        alt_bld.setMessage(finalTitle+"을(를) 플레이리스트에 추가하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        alt_bld.setMessage(sTitle+"을(를) 플레이리스트에 추가하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(view.getContext(), RoomActivity.class);
                                 intent.putExtra("s_videoId", videoId);
                                 intent.putExtra("s_publisher", publisher);
                                 intent.putExtra("s_thumbnailUrl", thumbnailUrl);
-                                intent.putExtra("s_title", finalTitle);
+                                intent.putExtra("s_title", title);
                                 ((AddPlaylistActivity) context).setResult(Activity.RESULT_OK, intent);
                                 ((AddPlaylistActivity) context).finish();
                             }
@@ -103,6 +109,14 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
         return vh;
     }
 
+    //dp를 px로 변환 (dp를 입력받아 px을 리턴)
+    public static int convertDpToPixel(int dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        int px = dp * (metrics.densityDpi / 160);
+        return px;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SearchedVideoItem plItem = searchedList.get(position);
@@ -111,7 +125,9 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
         holder.tv_pl_publisher.setText(plItem.getPublisher());
 
         String url = plItem.getThumbnailURL();
-        Glide.with(holder.itemView.getContext()).load(url).into(holder.pl_thumbnail);
+
+        int radius = convertDpToPixel(5, context);
+        Glide.with(holder.itemView.getContext()).load(url).transform(new CenterCrop(), new RoundedCorners(radius)).into(holder.pl_thumbnail);
     }
 
     @Override

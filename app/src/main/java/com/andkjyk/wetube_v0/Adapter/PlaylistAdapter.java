@@ -1,6 +1,8 @@
 package com.andkjyk.wetube_v0.Adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import com.andkjyk.wetube_v0.Model.PlaylistItem;
 import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.andkjyk.wetube_v0.R;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -53,6 +57,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         return vh;
     }
 
+    //dp를 px로 변환 (dp를 입력받아 px을 리턴)
+    public static int convertDpToPixel(int dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        int px = dp * (metrics.densityDpi / 160);
+        return px;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull PlaylistAdapter.ViewHolder holder, int position) {
         PlaylistItem plItem = plList.get(position);
@@ -61,7 +73,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.tv_pl_publisher.setText(plItem.getPlPublisher());
 
         String url = plItem.getPlThumbnailURL();
-        Glide.with(holder.itemView.getContext()).load(url).into(holder.pl_thumbnail);
+
+        int radius = convertDpToPixel(5, context);
+
+        Glide.with(holder.itemView.getContext()).load(url).transform(new CenterCrop(), new RoundedCorners(radius)).into(holder.pl_thumbnail);
     }
 
     @Override

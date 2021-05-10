@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,10 @@ import com.andkjyk.wetube_v0.Model.MainItem;
 import com.andkjyk.wetube_v0.R;
 import com.andkjyk.wetube_v0.RoomActivity;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CenterInside;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -147,6 +153,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         return vh;
     }
 
+    //dp를 px로 변환 (dp를 입력받아 px을 리턴)
+    public static int convertDpToPixel(int dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        int px = dp * (metrics.densityDpi / 160);
+        return px;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MainItem mainItem = mainList.get(position);
@@ -155,7 +169,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.tv_headcount.setText(mainItem.getHeadcount());
         holder.tv_video_name_playing.setText(mainItem.getVideoName());
         String url = mainItem.getThumbnail();
-        Glide.with(holder.itemView.getContext()).load(url).into(holder.room_thumbnail);
+
+        int radius = convertDpToPixel(5, context);
+
+        Glide.with(holder.itemView.getContext()).load(url).transform(new CenterCrop(), new RoundedCorners(radius)).into(holder.room_thumbnail);
     }
 
     @Override

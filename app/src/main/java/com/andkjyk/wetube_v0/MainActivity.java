@@ -62,6 +62,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for(int i = 0; i < 1; i++){
+            listTitle.add("펜트하우스 정주행");
+            listHeadcount.add(7+"");
+            String title = "[#펜트하우스\u200B] 시즌1 복습 11~21화 핵심만 요약! 정주행 하다보면 시즌2 온다";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                title = String.valueOf(Html.fromHtml(title));
+            }
+            listVideoName.add(title);
+            listThumbnail.add("https://i.ytimg.com/vi/CPRCglipOrs/hqdefault.jpg");
+        }
+
+        for(int i = 0; i < 1; i++){
+            listTitle.add("무한도전 같이볼사람 모여라!");
+            listHeadcount.add(23+"");
+            String title = "[8月의 무도] 우리 재석이가 화가 (많이) 났어요\uD83D\uDC7F 흑화한 재석, 그리고 배신과 반전의 작대기 파티! “도둑들” 1편 infinite challenge";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                title = String.valueOf(Html.fromHtml(title));
+            }
+            listVideoName.add(title);
+            listThumbnail.add("https://i.ytimg.com/vi/XyPJq4ukAyE/hqdefault.jpg");
+        }
+
+        for(int i = 0; i < listVideoName.size(); i++){
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MainItem data = new MainItem();
             data.setTitle(listTitle.get(i));
