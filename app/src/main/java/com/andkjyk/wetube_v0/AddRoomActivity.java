@@ -3,24 +3,21 @@ package com.andkjyk.wetube_v0;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.LabeledIntent;
 import android.graphics.Color;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -43,50 +39,29 @@ public class AddRoomActivity extends AppCompatActivity {
     boolean isCodeEntered, isTitleEntered, isHostNameEntered;
     String room_code, room_title, host_name;
 
-    private void postRequest() {
-        final String data = "{"+
-                "\"title\"" + "\"" + room_title + "\","+
-                "\"code\"" + "\"" + room_code + "\","+
-                "\"host\"" + "\"" + host_name +"\","+
-                "}";
-        String url = "http://3.37.36.38:3000/";
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+    private void postRoom() {
+        String url = "http://3.37.36.38:3000/room";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
 
+        JSONObject params = new JSONObject();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        try {
+            params.put("title", room_title);
+            params.put("host", host_name);
+            params.put("code", room_code);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    Toast.makeText(getApplicationContext(), obj.toString(), Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(), "Server Error", Toast.LENGTH_LONG).show();
-                }
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                        response -> {
+                            Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                        }, error -> {
+                            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
 
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }){
-              @Override
-              public String getBodyContentType(){
-                  return "text/html;charset=utf-8";
-              }
-
-              @Override
-            public byte[] getBody() throws  AuthFailureError {
-                  try {
-                      return data == null ? null : data.getBytes("utf-8");
-                  } catch (UnsupportedEncodingException e) {
-                      return null;
-                  }
-              }
-        };
-        requestQueue.add(stringRequest);
+        requestQueue.add(jsonObjReq);
     }
 
     @Override
@@ -101,37 +76,28 @@ public class AddRoomActivity extends AppCompatActivity {
         room_title_input = findViewById(R.id.room_title_input);
         host_name_input = findViewById(R.id.host_name_input);
 
-        left_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddRoomActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        left_icon.setOnClickListener(v -> {
+            Intent intent = new Intent(AddRoomActivity.this, MainActivity.class);
+            startActivity(intent);
         });
 
-        complete_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                room_title = room_title_input.getText().toString();
-                host_name = host_name_input.getText().toString();
+        complete_btn.setOnClickListener(view -> {
+            room_title = room_title_input.getText().toString();
+            host_name = host_name_input.getText().toString();
 
-                Intent intent = new Intent(AddRoomActivity.this, RoomActivity.class);
-                intent.putExtra("roomTitle", room_title);
-                intent.putExtra("roomCode", room_code);
-                intent.putExtra("hostName", host_name);
-                intent.putExtra("ActivityName", "AddRoom");
-                postRequest();
-                startActivityForResult(intent, ADDROOM_REQUEST_CODE);
-            }
+            Intent intent = new Intent(AddRoomActivity.this, RoomActivity.class);
+            intent.putExtra("roomTitle", room_title);
+            intent.putExtra("roomCode", room_code);
+            intent.putExtra("hostName", host_name);
+            intent.putExtra("ActivityName", "AddRoom");
+            postRoom();
+            startActivityForResult(intent, ADDROOM_REQUEST_CODE);
         });
 
-        random_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                room_code = randomCodeMaker();
-                code.setText(room_code);
-                Snackbar.make(view, "ROOM 코드가 '"+room_code+"'로 설정되었습니다.", Snackbar.LENGTH_SHORT).show();
-            }
+        random_btn.setOnClickListener(view -> {
+            room_code = randomCodeMaker();
+            code.setText(room_code);
+            Snackbar.make(view, "ROOM 코드가 '"+room_code+"'로 설정되었습니다.", Snackbar.LENGTH_SHORT).show();
         });
 
         room_title_input.addTextChangedListener(new TextWatcher() {
@@ -232,3 +198,4 @@ public class AddRoomActivity extends AppCompatActivity {
 
 
 }
+
