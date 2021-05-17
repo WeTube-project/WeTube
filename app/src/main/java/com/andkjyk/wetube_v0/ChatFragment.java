@@ -19,13 +19,20 @@ import com.andkjyk.wetube_v0.Adapter.ChatAdapter;
 import com.andkjyk.wetube_v0.Model.ChatItem;
 import com.andkjyk.wetube_v0.Model.ChatType;
 import com.andkjyk.wetube_v0.Model.MessageData;
+import com.andkjyk.wetube_v0.Model.RoomData;
+import com.google.gson.Gson;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+
 
 public class ChatFragment extends Fragment {
-
+    private Socket mSocket;
+    private Gson gson = new Gson();
     private RecyclerView chatRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private ChatAdapter chatAdapter;
@@ -51,7 +58,12 @@ public class ChatFragment extends Fragment {
     }
 
     private void init(View view){
-
+        try {
+            mSocket = IO.socket("http://3.37.36.38:3000/chat");
+            Log.d("SOCKET", "Connection success : " + mSocket.id());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         chatRecyclerView = (RecyclerView) view.findViewById(R.id.rv_chat);
         chatRecyclerView.setHasFixedSize(true);
@@ -90,6 +102,19 @@ public class ChatFragment extends Fragment {
                 sendMessage(view);
             }
         });
+
+        mSocket.connect();
+
+        mSocket.on(Socket.EVENT_CONNECT, args -> {
+            mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));     //room_code, room_pos 어떻게 처리할지 생각하기
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 액티비티가 소멸될 때 연결을 해제, 검색액티비티에서 돌아왔을 때 채팅이 남는지 확인하고, 안남으면 수정 필요할듯?
+        mSocket.disconnect();
     }
 
     // 리사이클러뷰에 채팅 추가
@@ -99,19 +124,23 @@ public class ChatFragment extends Fragment {
                 chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
                 chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
             } else {
-                chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
-                chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                if (user_name.equals(data.getFrom())) {
+                    chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.RIGHT_MESSAGE));
+                    chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                } else {
+                    chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
+                    chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
+                }
             }
         });
     }
 
     private void sendMessage(View view) {
         EditText msg = view.findViewById(R.id.editText);
+        mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
+                user_name, room_code, msg.getText().toString(), System.currentTimeMillis())));
         Log.d("MESSAGE", new MessageData("MESSAGE",
-                user_name,
-                room_pos+"",
-                msg.getText().toString(),
-                System.currentTimeMillis()).toString());
+                user_name, room_code+"", msg.getText().toString(), System.currentTimeMillis()).toString());
         chatAdapter.addItem(new ChatItem(user_name, msg.getText().toString(), toDate(System.currentTimeMillis()), ChatType.RIGHT_MESSAGE));
         chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
         msg.setText("");

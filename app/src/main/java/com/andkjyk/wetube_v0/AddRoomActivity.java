@@ -198,7 +198,7 @@ public class AddRoomActivity extends AppCompatActivity {
                 complete_btn.setEnabled(false);
             }
         }
-        
+
     private String randomCodeMaker() {
         Random rnd = new Random();
         StringBuffer buf = new StringBuffer();
