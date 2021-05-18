@@ -119,14 +119,14 @@ public class ChatFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         // 액티비티가 소멸될 때 연결을 해제, 검색액티비티에서 돌아왔을 때 채팅이 남는지 확인하고, 안남으면 수정 필요할듯?
-        mSocket.emit("left", gson.toJson(new RoomData(user_name, room_code)));
+        mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
         mSocket.disconnect();
     }
 
     // 리사이클러뷰에 채팅 추가
     private void addChat(MessageData data) {
         getActivity().runOnUiThread(() -> {
-            if (data.getType().equals("ENTER") || data.getType().equals("LEFT")) {
+            if (data.getType().equals("ENTER") || data.getType().equals("EXIT")) {
                 chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
                 chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
             } else {
