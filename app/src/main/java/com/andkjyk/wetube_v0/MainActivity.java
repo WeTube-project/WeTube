@@ -8,6 +8,10 @@ import androidx.annotation.Nullable;
 
 import com.andkjyk.wetube_v0.Adapter.MainAdapter;
 import com.andkjyk.wetube_v0.Model.MainItem;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
 import android.view.View;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,6 +31,28 @@ public class MainActivity extends AppCompatActivity {
 
     private MainAdapter adapter;
     private ArrayList<MainItem> mainItemList = new ArrayList<>();
+    String room_title, host_name;
+
+    private void getRoom() {
+        String url = "http://3.37.36.38:3000/room";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        room_title = response.getString("title");
+                        host_name = response.getString("host");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(getApplicationContext(), "msg from server => title: " + room_title + ", host : " + host_name, Toast.LENGTH_LONG).show();
+                }, error -> {
+            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
