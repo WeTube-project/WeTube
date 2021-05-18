@@ -65,13 +65,15 @@ public class UsersFragment extends Fragment {
             tv_my_name.setText(host_name);
             host_icon = view.findViewById(R.id.host_icon);
         }else{
+            host_name = bundle.getString("host_name");
             user_name = bundle.getString("user_name");
             tv_my_name.setText(user_name);
             host_icon = view.findViewById(R.id.host_icon_notme);
 
             TextView tv_host_name = view.findViewById(R.id.host_name);
             tv_host_name.setVisibility(View.VISIBLE);
-            tv_host_name.setText("호스트 이름"); //백엔드 작업 후 수정해야할듯
+            System.out.println("호스트 이름: "+host_name);
+            tv_host_name.setText(host_name);
         }
         host_icon.setVisibility(View.VISIBLE);
 

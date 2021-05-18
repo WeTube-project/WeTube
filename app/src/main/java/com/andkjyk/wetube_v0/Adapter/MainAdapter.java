@@ -88,6 +88,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                                     public void onClick(DialogInterface dialog, int id) {
                                         String userName = et.getText().toString();
                                         Intent intent = new Intent(v.getContext(), RoomActivity.class);
+                                        System.out.println("MainAdapter - 호스트이름: "+mainList.get(pos).getHostName());
+                                        intent.putExtra("hostName", mainList.get(pos).getHostName());
                                         intent.putExtra("userName", userName);
                                         System.out.println("방코드: "+mainList.get(pos).getRoomCode());
                                         intent.putExtra("roomCode", mainList.get(pos).getRoomCode());    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..

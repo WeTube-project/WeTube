@@ -35,27 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<MainItem> mainItemList = new ArrayList<>();
     String room_title, host_name, room_code;
 
-    private void getRoom() {
-        String url = "http://3.37.36.38:3000/room";
-        requestQueue.start();
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        room_title = response.getString("title");
-                        host_name = response.getString("host");
-                        System.out.println("방제목: "+room_title+"/ 호스트닉네임: "+host_name);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(getApplicationContext(), "msg from server => title: " + room_title + ", host : " + host_name, Toast.LENGTH_LONG).show();
-                }, error -> {
-            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
-        });
-
-        requestQueue.add(jsonObjReq);
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> listVideoName = new ArrayList<>();
                         ArrayList<String> listThumbnail = new ArrayList<>();
                         ArrayList<String> listRoomCode = new ArrayList<>();
+                        ArrayList<String> listHostName = new ArrayList<>();
 
                         //서버에서 받은 데이터를 list에 담는 부분
                         for(int i = 0; i < 1; i++){
-                            System.out.println("담기시작~~");
                             listTitle.add(room_title);
                             listHeadcount.add(15+"");
                             String title = "[놀면 뭐하니?] 유야호가 쏘아 올린 왕의 귀환\uD83E\uDD34 한 클립에 모아보기ㅣ#SG워너비\u200B #유야호\u200B #엠뚜루마뚜루\u200B MBC210417방송";
@@ -119,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             listVideoName.add(title);
                             listThumbnail.add("https://i.ytimg.com/vi/wV81QXfN5O8/hqdefault.jpg");
                             listRoomCode.add(room_code);
+                            listHostName.add(host_name);
                         }
 
                         //임의로 만든 데이터를 list에 담음
@@ -147,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                             data.setVideoName(listVideoName.get(i));
                             data.setThumbnail(listThumbnail.get(i));
                             data.setRoomCode(listRoomCode.get(i));
+                            data.setHostName(listHostName.get(i));
 
                             // 각 값이 들어간 data를 adapter에 추가합니다.
                             mainItemList.add(data);

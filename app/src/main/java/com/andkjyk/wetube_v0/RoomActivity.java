@@ -20,7 +20,6 @@ public class RoomActivity extends AppCompatActivity {
     Fragment frag_playlist, frag_users, frag_chat;
     String room_title, room_code, host_name, user_name;
     boolean isHost;
-    int room_pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,8 @@ public class RoomActivity extends AppCompatActivity {
             isHost = true;
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
-            room_pos = intent.getIntExtra("roomPos", -1);
+            host_name = intent.getStringExtra("hostName");
+            room_code = intent.getStringExtra("roomCode");
         } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
             // 백엔드 작업 후 수정
         } else {
@@ -103,6 +103,7 @@ public class RoomActivity extends AppCompatActivity {
                 if(isHost == true){
                     bundle.putString("host_name", host_name);
                 }else{
+                    bundle.putString("host_name", host_name);
                     bundle.putString("user_name", user_name);
                 }
 
