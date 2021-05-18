@@ -50,9 +50,9 @@ public class AddRoomActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
 
         try {
-            params.put("title", room_title);
-            params.put("host", host_name);
-            params.put("code", room_code);
+            params.put("roomTitle", room_title);
+            params.put("hostName", host_name);
+            params.put("roomCode", room_code);
         } catch (JSONException e){
             e.printStackTrace();
         }

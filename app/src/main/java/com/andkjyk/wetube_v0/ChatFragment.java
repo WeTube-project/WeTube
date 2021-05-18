@@ -89,8 +89,8 @@ public class ChatFragment extends Fragment {
             chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
-            room_pos = intent.getIntExtra("roomPos", -1);
-            MessageData data = new MessageData("ENTER", user_name, room_pos+"",user_name+"님이 입장하셨습니다.", System.currentTimeMillis());
+            room_code = intent.getStringExtra("roomCode");
+            MessageData data = new MessageData("ENTER", user_name, room_code,user_name+"님이 입장하셨습니다.", System.currentTimeMillis());
             addChat(data);
             chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
         } else{
@@ -107,8 +107,6 @@ public class ChatFragment extends Fragment {
         mSocket.connect();
 
         mSocket.on(Socket.EVENT_CONNECT, args -> {
-            RoomData roomData = new RoomData(user_name, room_code);
-            System.out.println("확인: " + gson.toJson(roomData));
             mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));     //room_code, room_pos 어떻게 처리할지 생각하기
         });
         mSocket.on("update", args -> {

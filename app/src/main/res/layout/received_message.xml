@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/rcvName"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="4dp"

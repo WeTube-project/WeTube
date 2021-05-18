@@ -1,7 +1,7 @@
 package com.andkjyk.wetube_v0.Model;
 
 public class MainItem {
-    private String title, headcount, videoName, thumbnail;
+    private String title, headcount, videoName, thumbnail, roomCode;
 
     public String getTitle(){
         return title;
@@ -17,6 +17,8 @@ public class MainItem {
 
     public String getThumbnail() { return thumbnail; }
 
+    public String getRoomCode() { return roomCode; }
+
     public void setTitle(String title){
         this.title = title;
     }
@@ -30,4 +32,6 @@ public class MainItem {
     }
 
     public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
+
+    public void setRoomCode(String roomCode) { this.roomCode = roomCode; }
 }

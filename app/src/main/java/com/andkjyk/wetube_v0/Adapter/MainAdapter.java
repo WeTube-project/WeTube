@@ -89,8 +89,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                                         String userName = et.getText().toString();
                                         Intent intent = new Intent(v.getContext(), RoomActivity.class);
                                         intent.putExtra("userName", userName);
-                                        intent.putExtra("roomPos", pos);    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..
-                                        // 애초에 roomPos가 있다면 roomCode가 필요한지 의문
+                                        System.out.println("방코드: "+mainList.get(pos).getRoomCode());
+                                        intent.putExtra("roomCode", mainList.get(pos).getRoomCode());    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..
                                         intent.putExtra("ActivityName", "Main");
                                         ((MainActivity) context).startActivity(intent);
                                     }
@@ -139,6 +139,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     public void addItems(ArrayList<MainItem> items){
         this.mainList = items;
+    }
+
+    public void clear(){
+        mainList.clear();
     }
 
     @NonNull
