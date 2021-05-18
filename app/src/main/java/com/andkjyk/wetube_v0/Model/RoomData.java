@@ -1,20 +1,20 @@
 package com.andkjyk.wetube_v0.Model;
 
 public class RoomData {
-    private String username;
+    private String userName;
     private String roomCode;
 
-    public RoomData(String username, String roomCode) {
-        this.username = username;
+    public RoomData(String userName, String roomCode) {
+        this.userName = userName;
         this.roomCode = roomCode;
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     public String getRoomCode() {

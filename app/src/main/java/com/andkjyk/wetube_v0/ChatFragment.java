@@ -59,7 +59,7 @@ public class ChatFragment extends Fragment {
 
     private void init(View view){
         try {
-            mSocket = IO.socket("http://3.37.36.38:3000/chat");
+            mSocket = IO.socket("http://3.37.36.38:3000/");
             Log.d("SOCKET", "Connection success : " + mSocket.id());
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -83,7 +83,8 @@ public class ChatFragment extends Fragment {
             //room_title = intent.getStringExtra("roomTitle");
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
-            MessageData data = new MessageData("ENTER", host_name, room_code,host_name+"님이 입장하셨습니다.", System.currentTimeMillis());
+            user_name = host_name;
+            MessageData data = new MessageData("ENTER", user_name, room_code,host_name+"님이 입장하셨습니다.", System.currentTimeMillis());
             addChat(data);
             chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
         } else if(SenderActivity.equals("Main")){
@@ -106,7 +107,13 @@ public class ChatFragment extends Fragment {
         mSocket.connect();
 
         mSocket.on(Socket.EVENT_CONNECT, args -> {
+            RoomData roomData = new RoomData(user_name, room_code);
+            System.out.println("확인: " + gson.toJson(roomData));
             mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));     //room_code, room_pos 어떻게 처리할지 생각하기
+        });
+        mSocket.on("update", args -> {
+            MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
+            addChat(data);
         });
     }
 
@@ -114,6 +121,7 @@ public class ChatFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         // 액티비티가 소멸될 때 연결을 해제, 검색액티비티에서 돌아왔을 때 채팅이 남는지 확인하고, 안남으면 수정 필요할듯?
+        mSocket.emit("left", gson.toJson(new RoomData(user_name, room_code)));
         mSocket.disconnect();
     }
 
