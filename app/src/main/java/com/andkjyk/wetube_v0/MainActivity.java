@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.andkjyk.wetube_v0.Adapter.MainAdapter;
 import com.andkjyk.wetube_v0.Model.MainItem;
+import com.andkjyk.wetube_v0.Model.Room;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -23,6 +24,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,11 +74,8 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        room_title = response.getString("roomTitle");
-                        host_name = response.getString("hostName");
-                        room_code = response.getString("roomCode");
-
-                        System.out.println("방제목: "+room_title+" / 방코드: "+room_code+" / 호스트닉네임: "+host_name);
+                        int room_size = response.getInt("roomSize");
+                        JSONArray roomarr = response.getJSONArray("room");
 
                         ArrayList<String> listTitle = new ArrayList<>();
                         ArrayList<String> listHeadcount = new ArrayList<>();
@@ -86,8 +85,16 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> listHostName = new ArrayList<>();
 
                         //서버에서 받은 데이터를 list에 담는 부분
-                        for(int i = 0; i < 1; i++){
-                            listTitle.add(room_title);
+                        for(int i = 0; i < room_size; i++){
+                            JSONObject jsonObject = roomarr.getJSONObject(i);
+
+                            Room room = new Room(
+                                jsonObject.getString("roomTitle"),
+                                jsonObject.getString("hostName"),
+                                jsonObject.getString("roomCode")
+                            );
+
+                            listTitle.add(room.getRoomTitle());
                             listHeadcount.add(15+"");
                             String title = "[놀면 뭐하니?] 유야호가 쏘아 올린 왕의 귀환\uD83E\uDD34 한 클립에 모아보기ㅣ#SG워너비\u200B #유야호\u200B #엠뚜루마뚜루\u200B MBC210417방송";
                             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -97,27 +104,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                             listVideoName.add(title);
                             listThumbnail.add("https://i.ytimg.com/vi/wV81QXfN5O8/hqdefault.jpg");
-                            listRoomCode.add(room_code);
-                            listHostName.add(host_name);
+                            listRoomCode.add(room.getRoomCode());
+                            listHostName.add(room.getHostName());
                         }
-
-                        //임의로 만든 데이터를 list에 담음
-                        /*
-                        for(int i = 0; i < 1; i++){
-                            listTitle.add("펜트하우스 정주행");
-                            listHeadcount.add(7+"");
-                            String title = "[#펜트하우스\u200B] 시즌1 복습 11~21화 핵심만 요약! 정주행 하다보면 시즌2 온다";
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-                            } else {
-                                title = String.valueOf(Html.fromHtml(title));
-                            }
-                            listVideoName.add(title);
-                            listThumbnail.add("https://i.ytimg.com/vi/CPRCglipOrs/hqdefault.jpg");
-                            listRoomCode.add("23pw7j");
-                        }
-
-                         */
 
                         for(int i = 0; i < listVideoName.size(); i++){
                             // 각 List의 값들을 data 객체에 set 해줍니다.
@@ -144,34 +133,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         requestQueue.add(jsonObjReq);
-
-        /*
-        for(int i = 0; i < 1; i++){
-            listTitle.add("펜트하우스 정주행");
-            listHeadcount.add(7+"");
-            String title = "[#펜트하우스\u200B] 시즌1 복습 11~21화 핵심만 요약! 정주행 하다보면 시즌2 온다";
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-            } else {
-                title = String.valueOf(Html.fromHtml(title));
-            }
-            listVideoName.add(title);
-            listThumbnail.add("https://i.ytimg.com/vi/CPRCglipOrs/hqdefault.jpg");
-        }
-
-        for(int i = 0; i < 1; i++){
-            listTitle.add("무한도전 같이볼사람 모여라!");
-            listHeadcount.add(23+"");
-            String title = "[8月의 무도] 우리 재석이가 화가 (많이) 났어요\uD83D\uDC7F 흑화한 재석, 그리고 배신과 반전의 작대기 파티! “도둑들” 1편 infinite challenge";
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-            } else {
-                title = String.valueOf(Html.fromHtml(title));
-            }
-            listVideoName.add(title);
-            listThumbnail.add("https://i.ytimg.com/vi/XyPJq4ukAyE/hqdefault.jpg");
-        }
-         */
 
     }
 
