@@ -4,15 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -43,6 +51,7 @@ public class RoomActivity extends AppCompatActivity {
             user_name = intent.getStringExtra("userName");
             host_name = intent.getStringExtra("hostName");
             room_code = intent.getStringExtra("roomCode");
+            postUser();
         } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
             // 백엔드 작업 후 수정
         } else {
@@ -120,5 +129,29 @@ public class RoomActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void postUser() {
+        String url = "http://3.37.36.38:3000/user";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("userName", user_name);
+            params.put("roomCode", room_code);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                response -> {
+                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                }, error -> {
+            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
     }
 }
