@@ -2,15 +2,16 @@ package com.andkjyk.wetube_v0.Model;
 
 public class PlaylistItem {
 
-    private String plVideoName, plPublisher, plVideoId, plThumbnailURL;
+    private String plVideoName, plPublisher, plVideoId, plThumbnailURL, plRoomCode;
 
     public PlaylistItem(){};
 
-    public PlaylistItem(String videoName, String publisher, String videoId, String thumbnailURL){
+    public PlaylistItem(String videoName, String publisher, String videoId, String thumbnailURL, String roomCode){
         this.plVideoName = videoName;
         this.plPublisher = publisher;
         this.plVideoId = videoId;
         this.plThumbnailURL = thumbnailURL;
+        this.plRoomCode = roomCode;
     }
 
     public String getPlVideoName(){
@@ -25,6 +26,8 @@ public class PlaylistItem {
 
     public String getPlThumbnailURL() { return plThumbnailURL; }
 
+    public String getPlRoomCode() { return plRoomCode; }
+
     public void setPlVideoName(String plVideoName){
         this.plVideoName = plVideoName;
     }
@@ -36,4 +39,6 @@ public class PlaylistItem {
     public void setPlVideoId(String plVideoName) { this.plVideoId = plVideoName; }
 
     public void setPlThumbnailURL(String plThumbnailURL) { this.plThumbnailURL = plThumbnailURL; }
+
+    public void setPlRoomCode(String plRoomCode) { this.plRoomCode = plRoomCode; }
 }

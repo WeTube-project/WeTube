@@ -109,6 +109,7 @@ public class RoomActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isHost", isHost);
+                bundle.putString("roomCode", room_code);
                 if(isHost == true){
                     bundle.putString("host_name", host_name);
                 }else{

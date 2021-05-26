@@ -31,6 +31,7 @@ public class PlaylistFragment extends Fragment {
     private int ADDPLAYLIST_REQUEST_CODE = 208;
 
     private ArrayList<PlaylistItem> plItemList = new ArrayList<>();
+    String roomCode;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -45,7 +46,8 @@ public class PlaylistFragment extends Fragment {
             String publisher = data.getStringExtra("s_publisher");
             String thumbnailUrl = data.getStringExtra("s_thumbnailUrl");
             String title = data.getStringExtra("s_title");
-            plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl));
+
+            plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl, roomCode));
             plAdapter.notifyDataSetChanged();
         }
     }
@@ -65,7 +67,11 @@ public class PlaylistFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle = getArguments();
+                roomCode = bundle.getString("roomCode");
+
                 Intent intent = new Intent(getActivity(), AddPlaylistActivity.class);
+                intent.putExtra("roomCode", roomCode);
                 startActivityForResult(intent, ADDPLAYLIST_REQUEST_CODE);
                 //startActivity(intent);
             }
@@ -124,6 +130,7 @@ public class PlaylistFragment extends Fragment {
             data.setPlPublisher(listPlPublisher.get(i));
             data.setPlVideoId(listPlVideoId.get(i));
             data.setPlThumbnailURL(listPlThumbnailURL.get(i));
+            data.setPlRoomCode(roomCode);
 
             plItemList.add(data);
         }
