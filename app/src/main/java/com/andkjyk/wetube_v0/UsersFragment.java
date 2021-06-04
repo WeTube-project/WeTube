@@ -21,7 +21,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -108,20 +110,23 @@ public class UsersFragment extends Fragment {
     private void getUser() {
         String url = "http://3.37.36.38:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.start();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        user = (ArrayList<String>) response.get("user");
+                        JSONArray users = response.getJSONArray("users");
+                        int user_size = response.getInt("userSize");
+                        for(int i = 0; i < user_size; i++) {
+                            user.add(users.getJSONObject(i).getString("userName"));
+                        }
+                        Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
+                        Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
-                    Toast.makeText(getContext(), "msg from server => user: " + user , Toast.LENGTH_LONG).show();
                 }, error -> {
             Toast.makeText(getContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
-
         requestQueue.add(jsonObjReq);
     }
 }
