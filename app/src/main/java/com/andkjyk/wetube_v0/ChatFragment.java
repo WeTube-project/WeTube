@@ -102,7 +102,9 @@ public class ChatFragment extends Fragment {
         // socket.io 메세지 받아오기
         ((RoomActivity) getActivity()).mSocket.on("update", args -> {
             MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
-            addChat(data);
+            if(getActivity() != null){
+                addChat(data);
+            }
         });
     }
 

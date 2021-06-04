@@ -39,6 +39,7 @@ public class UsersFragment extends Fragment {
     private String host_name, user_name;
     private ArrayList<String> user = new ArrayList<>();
     private boolean isHost;
+    private int user_size = 0;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -54,7 +55,7 @@ public class UsersFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        getUser();
+        //getUser();
         getData();
         Bundle bundle = getArguments();
 
@@ -92,6 +93,48 @@ public class UsersFragment extends Fragment {
     }
 
     private void getData(){
+        String url = "http://3.37.36.38:3000/user";
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray users = response.getJSONArray("users");
+                        System.out.println("user_size = " + user_size + "userSize = " + response.getInt("userSize"));
+                        if(user_size == response.getInt("userSize")){
+                            System.out.println("user_size: "+user_size);
+                            user_size = response.getInt("userSize");
+                            for(int i = 0; i < user_size; i++) {
+                                user.add(users.getJSONObject(i).getString("userName"));
+                            }
+                            Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
+                            userItems.clear();
+                            ArrayList<String> list = new ArrayList<>();
+                            int len = user.size();
+
+                            for(int i = 0; i < len; i++){
+                                list.add(user.get(i));
+                                System.out.println("user list ["+i+"] : "+user.get(i));
+                            }
+
+                            for(int i = 0; i < len; i++){
+                                UserItem data = new UserItem();
+                                data.setUserName(list.get(i));
+                                userItems.add(data);
+                                usersAdapter.addItems(userItems);
+                                usersAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                }, error -> {
+            Toast.makeText(getContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+        requestQueue.add(jsonObjReq);
+
+        /*
         userItems.clear();
         ArrayList<String> list = new ArrayList<>();
         int len = user.size();
@@ -104,9 +147,14 @@ public class UsersFragment extends Fragment {
             UserItem data = new UserItem();
             data.setUserName(list.get(i));
             userItems.add(data);
+            usersAdapter.addItems(userItems);
+            usersAdapter.notifyDataSetChanged();
         }
+
+         */
     }
 
+    /*
     private void getUser() {
         String url = "http://3.37.36.38:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -115,11 +163,14 @@ public class UsersFragment extends Fragment {
                 response -> {
                     try {
                         JSONArray users = response.getJSONArray("users");
-                        int user_size = response.getInt("userSize");
-                        for(int i = 0; i < user_size; i++) {
-                            user.add(users.getJSONObject(i).getString("userName"));
+                        if(user_size != response.getInt("userSize")){
+                            System.out.println("user_size: "+user_size);
+                            user_size = response.getInt("userSize");
+                            for(int i = 0; i < user_size; i++) {
+                                user.add(users.getJSONObject(i).getString("userName"));
+                            }
+                            Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
                         }
-                        Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
                         e.printStackTrace();
@@ -129,4 +180,6 @@ public class UsersFragment extends Fragment {
         });
         requestQueue.add(jsonObjReq);
     }
+
+     */
 }
