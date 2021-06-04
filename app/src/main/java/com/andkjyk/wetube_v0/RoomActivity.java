@@ -1,5 +1,8 @@
 package com.andkjyk.wetube_v0;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -75,6 +78,7 @@ public class RoomActivity extends AppCompatActivity {
             user_name = intent.getStringExtra("userName");
             host_name = intent.getStringExtra("hostName");
             room_code = intent.getStringExtra("roomCode");
+            isHost = false;
             postUser();
         } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
             // 백엔드 작업 후 수정
@@ -218,11 +222,40 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
         //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
         mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
         mSocket.disconnect();
 
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         startActivity(intent);
+
+
+
     }
+
+    /*
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
+        alt_bld.setMessage("퇴장하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(!isHost){
+                    // 호스트가 퇴장할 때
+                    System.out.println("호스트다아아아");
+
+                } else{
+                    // 게스트가 퇴장할 때
+                    System.out.println("게스트다아아아");
+                }
+            }
+        }).setNegativeButton("취소", null);
+        AlertDialog alert = alt_bld.create();
+        alert.show();
+    }
+
+     */
 }
