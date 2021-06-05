@@ -66,6 +66,7 @@ public class UsersFragment extends Fragment {
             host_name = bundle.getString("host_name");
             tv_my_name.setText(host_name);
             host_icon = view.findViewById(R.id.host_icon);
+            user_name = host_name;
         }else{
             host_name = bundle.getString("host_name");
             user_name = bundle.getString("user_name");
