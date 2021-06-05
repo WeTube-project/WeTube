@@ -21,7 +21,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,7 @@ public class UsersFragment extends Fragment {
     private String host_name, user_name;
     private ArrayList<String> user = new ArrayList<>();
     private boolean isHost;
+    private int user_size = 0;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -52,7 +55,6 @@ public class UsersFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        getUser();
         getData();
         Bundle bundle = getArguments();
 
@@ -64,6 +66,7 @@ public class UsersFragment extends Fragment {
             host_name = bundle.getString("host_name");
             tv_my_name.setText(host_name);
             host_icon = view.findViewById(R.id.host_icon);
+            user_name = host_name;
         }else{
             host_name = bundle.getString("host_name");
             user_name = bundle.getString("user_name");
@@ -90,38 +93,53 @@ public class UsersFragment extends Fragment {
     }
 
     private void getData(){
-        userItems.clear();
-        ArrayList<String> list = new ArrayList<>();
-        int len = user.size();
-
-        for(int i = 0; i < len; i++){
-            list.add(user.get(i));
-        }
-
-        for(int i = 0; i < len; i++){
-            UserItem data = new UserItem();
-            data.setUserName(list.get(i));
-            userItems.add(data);
-        }
-    }
-
-    private void getUser() {
         String url = "http://3.37.36.38:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.start();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        user = (ArrayList<String>) response.get("user");
+                        JSONArray users = response.getJSONArray("users");
+                        //System.out.println("user_size = " + user_size + " userSize = " + response.getInt("userSize"));
+                        user_size = response.getInt("userSize");
+                        user.clear();
+                        for(int i = 0; i < user_size; i++) {
+                            user.add(users.getJSONObject(i).getString("userName"));
+                        }
+                        Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
+
+                        ArrayList<String> list = new ArrayList<>();
+                        int len = user.size();
+                        //System.out.println("length: "+user.size());
+
+                        userItems.clear();
+                        list.clear();
+
+                        for(int i = 0; i < len; i++){
+                            list.add(user.get(i));
+                            //System.out.println("user list ["+i+"] : "+user.get(i)+"/"+user.get(i));
+                        }
+
+                        for(int i = 0; i < len; i++){
+                            //System.out.println("user list ["+i+"] : "+user.get(i));
+                            if(!user_name.equals(list.get(i))){
+                                UserItem data = new UserItem();
+                                data.setUserName(list.get(i));
+                                userItems.add(data);
+                                //System.out.println("userItems: "+userItems.get(i).getUserName());
+                            }
+                        }
+                        usersAdapter.addItems(userItems);
+                        usersAdapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
+                        Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
-                    Toast.makeText(getContext(), "msg from server => user: " + user , Toast.LENGTH_LONG).show();
                 }, error -> {
             Toast.makeText(getContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
-
         requestQueue.add(jsonObjReq);
+
     }
 }

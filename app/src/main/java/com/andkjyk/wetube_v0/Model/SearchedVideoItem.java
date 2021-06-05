@@ -5,6 +5,7 @@ public class SearchedVideoItem {
     private String publisher;
     private String thumbnailURL;
     private String id;
+    private String roomCode;
 
     public String getId() {
         return id;
@@ -17,6 +18,8 @@ public class SearchedVideoItem {
     public String getTitle() {
         return title;
     }
+
+    public String getRoomCode() { return roomCode; }
 
     public void setTitle(String title) {
         this.title = title;
@@ -37,4 +40,6 @@ public class SearchedVideoItem {
     public void setThumbnailURL(String thumbnail) {
         this.thumbnailURL = thumbnail;
     }
+
+    public void setRoomCode(String roomCode) { this.roomCode = roomCode; }
 }

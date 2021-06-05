@@ -41,6 +41,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
     private AddPlaylistAdapter adapter;
     private ImageView left_icon;
     private SearchView searchView;
+    private String roomCode;
 
     private ArrayList<SearchedVideoItem> searchedItemList = new ArrayList<>();
 
@@ -51,6 +52,10 @@ public class AddPlaylistActivity extends AppCompatActivity {
 
         left_icon = findViewById(R.id.left_icon);
         searchView = findViewById(R.id.searchView);
+
+        Intent intent = getIntent();
+        roomCode = intent.getExtras().getString("roomCode");
+        System.out.println("룸코드: " + roomCode);
 
         left_icon.setOnClickListener(new View.OnClickListener()
         {
@@ -197,6 +202,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
             data.setPublisher(listPublisher.get(i));
             data.setThumbnailURL(listThumbnail.get(i));
             data.setId(listId.get(i));
+            data.setRoomCode(roomCode);
 
             searchedItemList.add(data);
         }

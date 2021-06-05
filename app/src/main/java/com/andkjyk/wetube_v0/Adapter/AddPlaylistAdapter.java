@@ -85,7 +85,6 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
                         }).setNegativeButton("취소", null);
                         AlertDialog alert = alt_bld.create();
                         alert.show();
-
                     }
                 }
             });

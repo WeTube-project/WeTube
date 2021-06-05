@@ -31,13 +31,11 @@ import io.socket.client.Socket;
 
 
 public class ChatFragment extends Fragment {
-    private Socket mSocket;
     private Gson gson = new Gson();
     private RecyclerView chatRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private ChatAdapter chatAdapter;
     String room_code, host_name, user_name;
-    int room_pos;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -58,12 +56,6 @@ public class ChatFragment extends Fragment {
     }
 
     private void init(View view){
-        try {
-            mSocket = IO.socket("http://3.37.36.38:3000/");
-            Log.d("SOCKET", "Connection success : " + mSocket.id());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
         chatRecyclerView = (RecyclerView) view.findViewById(R.id.rv_chat);
         chatRecyclerView.setHasFixedSize(true);
@@ -104,23 +96,16 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        mSocket.connect();
+        // socket.io 연결
+        ((RoomActivity) getActivity()).mSocket.connect();
 
-        mSocket.on(Socket.EVENT_CONNECT, args -> {
-            mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));     //room_code, room_pos 어떻게 처리할지 생각하기
-        });
-        mSocket.on("update", args -> {
+        // socket.io 메세지 받아오기
+        ((RoomActivity) getActivity()).mSocket.on("update", args -> {
             MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
-            addChat(data);
+            if(getActivity() != null){
+                addChat(data);
+            }
         });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 액티비티가 소멸될 때 연결을 해제, 검색액티비티에서 돌아왔을 때 채팅이 남는지 확인하고, 안남으면 수정 필요할듯?
-        mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
-        mSocket.disconnect();
     }
 
     // 리사이클러뷰에 채팅 추가
@@ -141,9 +126,10 @@ public class ChatFragment extends Fragment {
         });
     }
 
+
     private void sendMessage(View view) {
         EditText msg = view.findViewById(R.id.editText);
-        mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
+        ((RoomActivity) getActivity()).mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
                 user_name, room_code, msg.getText().toString(), System.currentTimeMillis())));
         Log.d("MESSAGE", new MessageData("MESSAGE",
                 user_name, room_code+"", msg.getText().toString(), System.currentTimeMillis()).toString());
@@ -156,4 +142,5 @@ public class ChatFragment extends Fragment {
     private String toDate(long currentMiliis) {
         return new SimpleDateFormat("a hh:mm").format(new Date(currentMiliis));
     }
+
 }
