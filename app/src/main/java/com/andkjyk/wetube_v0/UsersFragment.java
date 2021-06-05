@@ -99,7 +99,7 @@ public class UsersFragment extends Fragment {
                 response -> {
                     try {
                         JSONArray users = response.getJSONArray("users");
-                        System.out.println("user_size = " + user_size + " userSize = " + response.getInt("userSize"));
+                        //System.out.println("user_size = " + user_size + " userSize = " + response.getInt("userSize"));
                         user_size = response.getInt("userSize");
                         user.clear();
                         for(int i = 0; i < user_size; i++) {
@@ -109,14 +109,14 @@ public class UsersFragment extends Fragment {
 
                         ArrayList<String> list = new ArrayList<>();
                         int len = user.size();
-                        System.out.println("length: "+user.size());
+                        //System.out.println("length: "+user.size());
 
                         userItems.clear();
                         list.clear();
 
                         for(int i = 0; i < len; i++){
                             list.add(user.get(i));
-                            System.out.println("user list ["+i+"] : "+user.get(i)+"/"+user.get(i));
+                            //System.out.println("user list ["+i+"] : "+user.get(i)+"/"+user.get(i));
                         }
 
                         for(int i = 0; i < len; i++){
@@ -125,7 +125,7 @@ public class UsersFragment extends Fragment {
                                 UserItem data = new UserItem();
                                 data.setUserName(list.get(i));
                                 userItems.add(data);
-                                System.out.println("userItems: "+userItems.get(i).getUserName());
+                                //System.out.println("userItems: "+userItems.get(i).getUserName());
                             }
                         }
                         usersAdapter.addItems(userItems);

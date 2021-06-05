@@ -229,9 +229,6 @@ public class RoomActivity extends AppCompatActivity {
 
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         startActivity(intent);
-
-
-
     }
 
     /*
