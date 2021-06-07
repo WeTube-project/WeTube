@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -19,28 +18,24 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.andkjyk.wetube_v0.MainActivity;
-import com.andkjyk.wetube_v0.Model.MainItem;
+import com.andkjyk.wetube_v0.Model.RoomItem;
 import com.andkjyk.wetube_v0.R;
 import com.andkjyk.wetube_v0.RoomActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
-    private ArrayList<MainItem> mainList = new ArrayList<>();
+    private ArrayList<RoomItem> mainList = new ArrayList<>();
     Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -134,12 +129,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         }
     }
 
-    public MainAdapter(Context context, ArrayList<MainItem> list){
+    public MainAdapter(Context context, ArrayList<RoomItem> list){
         this.mainList = list;
         this.context = context;
     }
 
-    public void addItems(ArrayList<MainItem> items){
+    public void addItems(ArrayList<RoomItem> items){
         this.mainList = items;
     }
 
@@ -169,12 +164,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MainItem mainItem = mainList.get(position);
+        RoomItem roomItem = mainList.get(position);
 
-        holder.tv_room_title.setText(mainItem.getTitle());
-        holder.tv_headcount.setText(mainItem.getHeadcount());
-        holder.tv_video_name_playing.setText(mainItem.getVideoName());
-        String url = mainItem.getThumbnail();
+        holder.tv_room_title.setText(roomItem.getRoomTitle());
+        holder.tv_headcount.setText(roomItem.getHeadcount());
+        holder.tv_video_name_playing.setText(roomItem.getVideoName());
+        String url = roomItem.getThumbnail();
 
         int radius = convertDpToPixel(5, context);
 

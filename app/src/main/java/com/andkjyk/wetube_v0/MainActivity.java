@@ -7,8 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.andkjyk.wetube_v0.Adapter.MainAdapter;
-import com.andkjyk.wetube_v0.Model.MainItem;
-import com.andkjyk.wetube_v0.Model.Room;
+import com.andkjyk.wetube_v0.Model.RoomItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     RequestQueue requestQueue;
     private MainAdapter adapter;
-    private ArrayList<MainItem> mainItemList = new ArrayList<>();
+    private ArrayList<RoomItem> roomItemList = new ArrayList<>();
     String room_title, host_name, room_code;
 
     @Override
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
-        adapter = new MainAdapter(this, mainItemList);
+        adapter = new MainAdapter(this, roomItemList);
         recyclerView.setAdapter(adapter);
 
         requestQueue = Volley.newRequestQueue(this);
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         for(int i = 0; i < room_size; i++){
                             JSONObject jsonObject = roomarr.getJSONObject(i);
 
-                            Room room = new Room(
+                            RoomItem room = new RoomItem(
                                 jsonObject.getString("roomTitle"),
                                 jsonObject.getString("hostName"),
                                 jsonObject.getString("roomCode")
@@ -110,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
                         for(int i = 0; i < listVideoName.size(); i++){
                             // 각 List의 값들을 data 객체에 set 해줍니다.
-                            MainItem data = new MainItem();
-                            data.setTitle(listTitle.get(i));
+                            RoomItem data = new RoomItem();
+                            data.setRoomTitle(listTitle.get(i));
                             data.setHeadcount(listHeadcount.get(i));
                             data.setVideoName(listVideoName.get(i));
                             data.setThumbnail(listThumbnail.get(i));
@@ -119,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
                             data.setHostName(listHostName.get(i));
 
                             // 각 값이 들어간 data를 adapter에 추가합니다.
-                            mainItemList.add(data);
-                            adapter.addItems(mainItemList);
+                            roomItemList.add(data);
+                            adapter.addItems(roomItemList);
                             adapter.notifyDataSetChanged();
                         }
 

@@ -1,11 +1,17 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class MainItem {
-    private String title, headcount, videoName, thumbnail, roomCode, hostName;
+public class RoomItem {
+    private String roomTitle, headcount, videoName, thumbnail, roomCode, hostName;
 
-    public String getTitle(){
-        return title;
+    public RoomItem(){};
+
+    public RoomItem(String roomTitle, String hostName, String roomCode) {
+        this.roomTitle = roomTitle;
+        this.hostName = hostName;
+        this.roomCode = roomCode;
     }
+
+    public String getRoomTitle(){ return roomTitle; }
 
     public String getHeadcount(){
         return headcount;
@@ -21,8 +27,8 @@ public class MainItem {
 
     public String getHostName() { return hostName; }
 
-    public void setTitle(String title){
-        this.title = title;
+    public void setRoomTitle(String roomTitle){
+        this.roomTitle = roomTitle;
     }
 
     public void setHeadcount(String headcount){

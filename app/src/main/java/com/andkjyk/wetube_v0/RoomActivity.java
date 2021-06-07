@@ -113,6 +113,8 @@ public class RoomActivity extends AppCompatActivity {
         YouTubePlayerView youTubePlayerView = findViewById(R.id.video);
         getLifecycle().addObserver(youTubePlayerView);
 
+
+
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
