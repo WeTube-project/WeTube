@@ -21,14 +21,17 @@ import com.andkjyk.wetube_v0.Model.ChatItem;
 import com.andkjyk.wetube_v0.Model.ChatType;
 import com.andkjyk.wetube_v0.Model.MessageData;
 import com.andkjyk.wetube_v0.Model.RoomData;
+import com.andkjyk.wetube_v0.Model.SyncData;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import org.json.JSONException;
@@ -40,6 +43,8 @@ import java.util.Date;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+
+import static android.media.MediaPlayer.MetricsConstants.PLAYING;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -109,11 +114,14 @@ public class RoomActivity extends AppCompatActivity {
             mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));
         });
 
+
+
         // YouTube Video 띄우는 부분
         YouTubePlayerView youTubePlayerView = findViewById(R.id.video);
         getLifecycle().addObserver(youTubePlayerView);
 
 
+        YouTubePlayerTracker tracker = new YouTubePlayerTracker();
 
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
@@ -122,6 +130,104 @@ public class RoomActivity extends AppCompatActivity {
                 youTubePlayer.loadVideo(videoId, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
+            @Override
+            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
+                super.onStateChange(youTubePlayer, state);
+                youTubePlayer.addListener(tracker);
+                String videoId = tracker.getVideoId();
+                if(isHost){
+                    float hostTimestamp = tracker.getCurrentSecond();
+                    boolean isPaused = false;
+                    if(state.equals(PlayerConstants.PlayerState.PAUSED)){
+                        isPaused = true;
+                    }
+                    //System.out.println("호스트 synchronize");
+                    float guestTimestamp = -1;
+                    mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, guestTimestamp, videoId, room_code)));
+                }
+            }
+
+            @Override
+            public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {
+                super.onCurrentSecond(youTubePlayer, second);
+                youTubePlayer.addListener(tracker);
+                String videoId = tracker.getVideoId();
+                if(isHost){
+                    float hostTimestamp = Math.round(second*10)/10.0f;
+                    boolean isPaused = false;
+                    PlayerConstants.PlayerState hostState = tracker.getState();
+                    if(hostState.equals(PlayerConstants.PlayerState.PAUSED)){
+                        isPaused = true;
+                    }
+
+                    if(hostTimestamp % 1 == 0){
+                        float guestTimestamp = -1;
+                        mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, guestTimestamp, videoId, room_code)));
+                    }
+                    //System.out.println("호스트 synchronize");
+                    //mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, videoId, room_code)));
+                } else{
+
+                    float guestTimestamp = Math.round(second*10)/10.0f;
+                    System.out.println(user_name+"- guestTimestamp:"+guestTimestamp);
+                    mSocket.emit("syncData", gson.toJson(new SyncData(true, guestTimestamp, user_name)));
+                    //if(guestTimestamp % 1 == 0){
+                    //    mSocket.emit("gSyncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
+                    //}
+
+                    mSocket.on("sync", args -> {
+                        SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
+                        String hostVideoId = data.getVideoId();
+                        float hostTimestamp = data.getHostTimestamp();
+                        if(videoId != hostVideoId){
+                            System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
+                            youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                        } else {
+                            float firstHostTimestamp = data.getFirstHostTimestamp();
+                            float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
+                            System.out.println("게스트 synchronize");
+                            boolean isPaused = data.getIsPaused();
+                            if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
+                                System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
+                                PlayerConstants.PlayerState state = tracker.getState();
+                                if(state.equals(PlayerConstants.PlayerState.PAUSED)){
+                                    youTubePlayer.play();
+                                }
+                                youTubePlayer.seekTo(hostTimestamp);
+                            }
+                        }
+                        // updateGuestSync(data, guestTimestamp);
+                    });
+                    /*
+                    if(guestTimestamp % 1 == 0 && guestTimestamp <= 1.0){
+                        mSocket.on("sync", args -> {
+                            SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
+                            String hostVideoId = data.getVideoId();
+                            float hostTimestamp = data.getHostTimestamp();
+                            if(videoId != hostVideoId){
+                                System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
+                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                            } else {
+                                float firstHostTimestamp = data.getFirstHostTimestamp();
+                                float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
+                                System.out.println("게스트 synchronize");
+                                boolean isPaused = data.getIsPaused();
+                                if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
+                                    System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
+                                    PlayerConstants.PlayerState state = tracker.getState();
+                                    if(state.equals(PlayerConstants.PlayerState.PAUSED)){
+                                        youTubePlayer.play();
+                                    }
+                                    youTubePlayer.seekTo(hostTimestamp);
+                                }
+                            }
+                            // updateGuestSync(data, guestTimestamp);
+                        });
+                    }
+
+                     */
+                }
+            }
         });
 
         frag_chat = new ChatFragment();
@@ -171,6 +277,12 @@ public class RoomActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+        });
+    }
+
+    private void updateGuestSync(SyncData data, float guestTimestramp) {
+        runOnUiThread(() -> {
+
         });
     }
 

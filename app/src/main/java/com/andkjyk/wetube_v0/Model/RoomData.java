@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-// chatting 기능 socket.io로 주고받는 방 정보, RoomItem과 별개이다.
+// chatting 기능, 싱크 기능에서 socket.io로 주고받는 방 정보, RoomItem과 별개이다.
 public class RoomData {
     private String userName;
     private String roomCode;
