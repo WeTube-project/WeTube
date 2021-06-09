@@ -12,10 +12,17 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.andkjyk.wetube_v0.Adapter.AddPlaylistAdapter;
+import com.andkjyk.wetube_v0.Model.MainItem;
 import com.andkjyk.wetube_v0.Model.PlaylistItem;
+import com.andkjyk.wetube_v0.Model.Room;
 import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -28,6 +35,10 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,6 +153,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
 
             List<SearchResult> searchResultList = searchResponse.getItems();
 
+
             if (searchResultList != null) {
                 prettyPrint(searchResultList.iterator(), query);
             }
@@ -178,6 +190,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
                 Thumbnail thumbnail = (Thumbnail) singleVideo.getSnippet().getThumbnails().get("high");
 
                 String title = singleVideo.getSnippet().getTitle();
+
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
                 } else {
@@ -203,31 +216,54 @@ public class AddPlaylistActivity extends AppCompatActivity {
             data.setThumbnailURL(listThumbnail.get(i));
             data.setId(listId.get(i));
             data.setRoomCode(roomCode);
-
+            postMedia(roomCode, listTitle.get(i), listPublisher.get(i), listThumbnail.get(i), listId.get(i));
             searchedItemList.add(data);
         }
     }
+
+    private void postMedia(String roomCode, String videoTitle, String publisher, String thumbnailUrl, String videoId) {
+        String url = "http://3.37.36.38:3000/media";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("roomCode", roomCode);
+            params.put("videoTitle", videoTitle);
+            params.put("publisher", publisher);
+            params.put("thumbnailUrl", thumbnailUrl);
+            params.put("videoId", videoId);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                response -> {
+                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                }, error -> {
+            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
+    }
+
 /*
     private void getData(){
-
         searchedItemList.clear();
         ArrayList<String> listTitle = new ArrayList<>();
         ArrayList<String> listPublisher = new ArrayList<>();
-
         for(int i = 0; i < 12; i++){
             listTitle.add(i+"번째 영상 가나다라마바사아자차카타파하가나다라마바사아자차");
             listPublisher.add(i+"번째 게시자 아야어여오요우유으이");
         }
-
         for(int i = 0; i < 12; i++){
             SearchedVideoItem data = new SearchedVideoItem();
             System.out.println("정보: "+listTitle.get(i)+" "+listPublisher.get(i));
             data.setTitle(listTitle.get(i));
             data.setPublisher(listPublisher.get(i));
-
             searchedItemList.add(data);
         }
     }
-
  */
 }
