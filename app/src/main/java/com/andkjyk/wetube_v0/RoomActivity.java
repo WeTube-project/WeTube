@@ -94,8 +94,38 @@ public class RoomActivity extends AppCompatActivity {
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                startActivity(intent);
+                if(isHost){
+                    // 호스트가 퇴장할 때
+                    System.out.println("호스트다아아아");
+                    AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
+                    alt_bld.setMessage("퇴장하시겠습니까? 호스트 권한이 다음 사용자에게 위임됩니다. 사용자가 없으면 방은 삭제됩니다.").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // 이 부분에서 서버랑 통신해서 hostName을 위임할 사용자 닉네임으로 바꾸고, 기존 호스트 정보는 삭제
+                            // 위임할 사용자의 isHost를 true로 변경하기 위해서 UserFragment에서 서버와 통신하는 부분에서 isHost변수 또한 받아야할것같네요
+                            // 현재 db_index.js에서는 userName, roomCode만 보내고 있어서요
+                            Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }).setNegativeButton("취소", null);
+                    AlertDialog alert = alt_bld.create();
+                    alert.show();
+
+                } else{
+                    // 게스트가 퇴장할 때
+                    System.out.println("게스트다아아아");
+                    AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
+                    alt_bld.setMessage("퇴장하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // 서버와 통신해서 user 정보 삭제 (user_name 변수 사용)
+                            Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }).setNegativeButton("취소", null);
+                    AlertDialog alert = alt_bld.create();
+                    alert.show();
+                }
             }
         });
 
@@ -171,33 +201,33 @@ public class RoomActivity extends AppCompatActivity {
                     float guestTimestamp = Math.round(second*10)/10.0f;
                     System.out.println(user_name+"- guestTimestamp:"+guestTimestamp);
                     mSocket.emit("syncData", gson.toJson(new SyncData(true, guestTimestamp, user_name)));
-                    //if(guestTimestamp % 1 == 0){
-                    //    mSocket.emit("gSyncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
-                    //}
-
-                    mSocket.on("sync", args -> {
-                        SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
-                        String hostVideoId = data.getVideoId();
-                        float hostTimestamp = data.getHostTimestamp();
-                        if(videoId != hostVideoId){
-                            System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
-                            youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
-                        } else {
-                            float firstHostTimestamp = data.getFirstHostTimestamp();
-                            float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
-                            System.out.println("게스트 synchronize");
-                            boolean isPaused = data.getIsPaused();
-                            if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
-                                System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
-                                PlayerConstants.PlayerState state = tracker.getState();
-                                if(state.equals(PlayerConstants.PlayerState.PAUSED)){
-                                    youTubePlayer.play();
+                    if(guestTimestamp % 1 == 0){
+                        //mSocket.emit("gSyncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
+                        mSocket.on("sync", args -> {
+                            SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
+                            String hostVideoId = data.getVideoId();
+                            float hostTimestamp = data.getHostTimestamp();
+                            if(videoId != hostVideoId){
+                                System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
+                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                            } else {
+                                float firstHostTimestamp = data.getFirstHostTimestamp();
+                                float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
+                                System.out.println("게스트 synchronize");
+                                boolean isPaused = data.getIsPaused();
+                                if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
+                                    System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
+                                    PlayerConstants.PlayerState state = tracker.getState();
+                                    if(state.equals(PlayerConstants.PlayerState.PAUSED)){
+                                        youTubePlayer.play();
+                                    }
+                                    youTubePlayer.seekTo(hostTimestamp);
                                 }
-                                youTubePlayer.seekTo(hostTimestamp);
                             }
-                        }
-                        // updateGuestSync(data, guestTimestamp);
-                    });
+                            // updateGuestSync(data, guestTimestamp);
+                        });
+                    }
+
                     /*
                     if(guestTimestamp % 1 == 0 && guestTimestamp <= 1.0){
                         mSocket.on("sync", args -> {
