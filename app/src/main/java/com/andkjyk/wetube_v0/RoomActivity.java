@@ -215,6 +215,7 @@ public class RoomActivity extends AppCompatActivity {
                                 float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
                                 System.out.println("게스트 synchronize");
                                 boolean isPaused = data.getIsPaused();
+
                                 if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
                                     System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
                                     PlayerConstants.PlayerState state = tracker.getState();
@@ -222,6 +223,9 @@ public class RoomActivity extends AppCompatActivity {
                                         youTubePlayer.play();
                                     }
                                     youTubePlayer.seekTo(hostTimestamp);
+                                    if (isPaused) {
+                                        youTubePlayer.pause();
+                                    }
                                 }
                             }
                             // updateGuestSync(data, guestTimestamp);

@@ -15,9 +15,6 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.andkjyk.wetube_v0.Adapter.AddPlaylistAdapter;
-import com.andkjyk.wetube_v0.Model.MainItem;
-import com.andkjyk.wetube_v0.Model.PlaylistItem;
-import com.andkjyk.wetube_v0.Model.Room;
 import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
