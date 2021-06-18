@@ -94,7 +94,7 @@ public class RoomActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(isHost){
                     // 호스트가 퇴장할 때
-                    System.out.println("호스트다아아아");
+                    //System.out.println("호스트다아아아");
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
                     alt_bld.setMessage("퇴장하시겠습니까? 호스트 권한이 다음 사용자에게 위임됩니다. 사용자가 없으면 방은 삭제됩니다.").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                         @Override
@@ -111,7 +111,7 @@ public class RoomActivity extends AppCompatActivity {
 
                 } else{
                     // 게스트가 퇴장할 때
-                    System.out.println("게스트다아아아");
+                    //System.out.println("게스트다아아아");
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
                     alt_bld.setMessage("퇴장하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                         @Override
@@ -173,26 +173,29 @@ public class RoomActivity extends AppCompatActivity {
                 super.onCurrentSecond(youTubePlayer, second);
                 youTubePlayer.addListener(tracker);
                 String videoId = tracker.getVideoId();
+
                 if(isHost){
+                    //System.out.println("HostVideoId:"+videoId);
                     float hostTimestamp = Math.round(second*10)/10.0f;
                     if(hostTimestamp % 1 == 0){
                         mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
                     }
                 } else{
+                    //System.out.println("GuestVideoId:"+videoId);
                     _guestTimestamp = Math.round(second*10)/10.0f;
                     System.out.println(user_name+"- guestTimestamp:"+_guestTimestamp);
                     if(_guestTimestamp % 1 == 0){
-                        System.out.println("guestTimestamp: 왜이래 "+ _guestTimestamp);
                         mSocket.on("sync", args -> {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
                             String hostVideoId = data.getVideoId();
                             float hostTimestamp = data.getHostTimestamp();
-                            if(!videoId.equals(hostVideoId)){
-                                System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
+                            //System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
+                            if(false){   // if(!videoId.equals(hostVideoId))인데 둘다 null을 return하는 문제 있어서 해결 필요, 일단 false로 처리
+                                //System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
                                 youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
                             } else {
                                 float gap = hostTimestamp - _guestTimestamp;
-                                System.out.println("게스트 synchronize");
+                                //System.out.println("게스트 synchronize");
 
                                 if (Math.abs(gap) >= 1.0) {   // gap이 3초 이상일 때
                                     System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+ _guestTimestamp+"/ seekTo " + hostTimestamp);

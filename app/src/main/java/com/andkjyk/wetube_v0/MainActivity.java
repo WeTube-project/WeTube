@@ -47,7 +47,16 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
+                // 리사이클러뷰에 LinearLayoutManager 객체 지정.
+                RecyclerView recyclerView = findViewById(R.id.room_recycler);
+                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
+                adapter = new MainAdapter(MainActivity.this, roomItemList);
+                recyclerView.setAdapter(adapter);
+                requestQueue = Volley.newRequestQueue(MainActivity.this);
+
+                // adpater.clear();
                 getData();
                 refreshLayout.setRefreshing(false);
             }
