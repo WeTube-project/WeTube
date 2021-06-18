@@ -58,10 +58,6 @@ public class RoomActivity extends AppCompatActivity {
     boolean isHost;
     float _guestTimestamp;
 
-    private RecyclerView chatRecyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private ChatAdapter chatAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,16 +138,12 @@ public class RoomActivity extends AppCompatActivity {
 
         // 입장메세지 띄우기 위해 방 정보 서버에 보냄
         mSocket.on(Socket.EVENT_CONNECT, args -> {
-            //System.out.println("아아아아아아ㅏ아아아 enter");
             mSocket.emit("enter", gson.toJson(new RoomData(user_name, room_code)));
         });
-
-
 
         // YouTube Video 띄우는 부분
         YouTubePlayerView youTubePlayerView = findViewById(R.id.video);
         getLifecycle().addObserver(youTubePlayerView);
-
 
         YouTubePlayerTracker tracker = new YouTubePlayerTracker();
 
@@ -169,13 +161,9 @@ public class RoomActivity extends AppCompatActivity {
                 String videoId = tracker.getVideoId();
                 if(isHost){
                     float hostTimestamp = tracker.getCurrentSecond();
-                    boolean isPaused = false;
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
-                        isPaused = true;
                         mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
                     }
-                    //System.out.println("호스트 synchronize");
-                    float guestTimestamp = -1;
                     mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
                 }
             }
@@ -187,40 +175,24 @@ public class RoomActivity extends AppCompatActivity {
                 String videoId = tracker.getVideoId();
                 if(isHost){
                     float hostTimestamp = Math.round(second*10)/10.0f;
-                    //float hostTimestamp = second;
-                    boolean isPaused = false;
-                    PlayerConstants.PlayerState hostState = tracker.getState();
-                    if(hostState.equals(PlayerConstants.PlayerState.PAUSED)){
-                        isPaused = true;
-                    }
-
                     if(hostTimestamp % 1 == 0){
-                        // _guestTimestamp = -1;
                         mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
                     }
-                    //System.out.println("호스트 synchronize");
-                    //mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, videoId, room_code)));
                 } else{
                     _guestTimestamp = Math.round(second*10)/10.0f;
-                    //_guestTimestamp = second;
                     System.out.println(user_name+"- guestTimestamp:"+_guestTimestamp);
-                    //mSocket.emit("syncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
                     if(_guestTimestamp % 1 == 0){
-
-                        //mSocket.emit("gSyncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
                         System.out.println("guestTimestamp: 왜이래 "+ _guestTimestamp);
                         mSocket.on("sync", args -> {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
                             String hostVideoId = data.getVideoId();
                             float hostTimestamp = data.getHostTimestamp();
-                            if(videoId != hostVideoId){
+                            if(!videoId.equals(hostVideoId)){
                                 System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
                                 youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
                             } else {
-                                float firstHostTimestamp = data.getFirstHostTimestamp();
                                 float gap = hostTimestamp - _guestTimestamp;
                                 System.out.println("게스트 synchronize");
-                                //boolean isPaused = data.getIsPaused();
 
                                 if (Math.abs(gap) >= 1.0) {   // gap이 3초 이상일 때
                                     System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+ _guestTimestamp+"/ seekTo " + hostTimestamp);
@@ -229,52 +201,17 @@ public class RoomActivity extends AppCompatActivity {
                                         youTubePlayer.play();
                                     }
                                     youTubePlayer.seekTo(hostTimestamp);
-                                    /*
-                                    if (isPaused) {
-                                        youTubePlayer.pause();
-                                    }
-                                    */
                                 }
                             }
-                            // updateGuestSync(data, guestTimestamp);
                         });
                         mSocket.on("pause", args -> {
                             PauseData data = gson.fromJson(args[0].toString(), PauseData.class);
                             boolean isPaused = data.getIsPaused();
-                            if(isPaused == true){
+                            if(isPaused){
                                 youTubePlayer.pause();
                             }
                         });
                     }
-
-                    /*
-                    if(guestTimestamp % 1 == 0 && guestTimestamp <= 1.0){
-                        mSocket.on("sync", args -> {
-                            SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
-                            String hostVideoId = data.getVideoId();
-                            float hostTimestamp = data.getHostTimestamp();
-                            if(videoId != hostVideoId){
-                                System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
-                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
-                            } else {
-                                float firstHostTimestamp = data.getFirstHostTimestamp();
-                                float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
-                                System.out.println("게스트 synchronize");
-                                boolean isPaused = data.getIsPaused();
-                                if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
-                                    System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
-                                    PlayerConstants.PlayerState state = tracker.getState();
-                                    if(state.equals(PlayerConstants.PlayerState.PAUSED)){
-                                        youTubePlayer.play();
-                                    }
-                                    youTubePlayer.seekTo(hostTimestamp);
-                                }
-                            }
-                            // updateGuestSync(data, guestTimestamp);
-                        });
-                    }
-
-                     */
                 }
             }
         });
@@ -285,7 +222,7 @@ public class RoomActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().add(R.id.room_frame, frag_chat).commit();
 
-        TabLayout tabs = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabs = findViewById(R.id.tab_layout);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
@@ -307,7 +244,7 @@ public class RoomActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isHost", isHost);
                 bundle.putString("roomCode", room_code);
-                if(isHost == true){
+                if(isHost){
                     bundle.putString("host_name", host_name);
                 }else{
                     bundle.putString("host_name", host_name);
@@ -319,36 +256,12 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                    //
+
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
-            }
-        });
-    }
-
-    private void updateGuestSync(SyncData data, float guestTimestramp) {
-        runOnUiThread(() -> {
-
-        });
-    }
-
-    // 리사이클러뷰에 채팅 추가
-    void addChat(MessageData data) {
-        this.runOnUiThread(() -> {
-            if (data.getType().equals("ENTER") || data.getType().equals("EXIT")) {
-                chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.CENTER_MESSAGE));
-                chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
-            } else {
-                if (user_name.equals(data.getFrom())) {
-                    chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.RIGHT_MESSAGE));
-                    chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
-                } else {
-                    chatAdapter.addItem(new ChatItem(data.getFrom(), data.getContent(), toDate(data.getSendTime()), ChatType.LEFT_MESSAGE));
-                    chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
-                }
             }
         });
     }
@@ -393,29 +306,4 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         startActivity(intent);
     }
-
-    /*
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
-        alt_bld.setMessage("퇴장하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(!isHost){
-                    // 호스트가 퇴장할 때
-                    System.out.println("호스트다아아아");
-
-                } else{
-                    // 게스트가 퇴장할 때
-                    System.out.println("게스트다아아아");
-                }
-            }
-        }).setNegativeButton("취소", null);
-        AlertDialog alert = alt_bld.create();
-        alert.show();
-    }
-
-     */
 }
