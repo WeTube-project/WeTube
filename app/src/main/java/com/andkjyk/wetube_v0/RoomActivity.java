@@ -20,6 +20,7 @@ import com.andkjyk.wetube_v0.Adapter.ChatAdapter;
 import com.andkjyk.wetube_v0.Model.ChatItem;
 import com.andkjyk.wetube_v0.Model.ChatType;
 import com.andkjyk.wetube_v0.Model.MessageData;
+import com.andkjyk.wetube_v0.Model.PauseData;
 import com.andkjyk.wetube_v0.Model.RoomData;
 import com.andkjyk.wetube_v0.Model.SyncData;
 import com.android.volley.Request;
@@ -55,6 +56,7 @@ public class RoomActivity extends AppCompatActivity {
     Fragment frag_playlist, frag_users, frag_chat;
     String room_title, room_code, host_name, user_name;
     boolean isHost;
+    float _guestTimestamp;
 
     private RecyclerView chatRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -170,10 +172,11 @@ public class RoomActivity extends AppCompatActivity {
                     boolean isPaused = false;
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                         isPaused = true;
+                        mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
                     }
                     //System.out.println("호스트 synchronize");
                     float guestTimestamp = -1;
-                    mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, guestTimestamp, videoId, room_code)));
+                    mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
                 }
             }
 
@@ -184,6 +187,7 @@ public class RoomActivity extends AppCompatActivity {
                 String videoId = tracker.getVideoId();
                 if(isHost){
                     float hostTimestamp = Math.round(second*10)/10.0f;
+                    //float hostTimestamp = second;
                     boolean isPaused = false;
                     PlayerConstants.PlayerState hostState = tracker.getState();
                     if(hostState.equals(PlayerConstants.PlayerState.PAUSED)){
@@ -191,18 +195,20 @@ public class RoomActivity extends AppCompatActivity {
                     }
 
                     if(hostTimestamp % 1 == 0){
-                        float guestTimestamp = -1;
-                        mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, guestTimestamp, videoId, room_code)));
+                        // _guestTimestamp = -1;
+                        mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
                     }
                     //System.out.println("호스트 synchronize");
                     //mSocket.emit("syncData", gson.toJson(new SyncData(true, isPaused, hostTimestamp, videoId, room_code)));
                 } else{
+                    _guestTimestamp = Math.round(second*10)/10.0f;
+                    //_guestTimestamp = second;
+                    System.out.println(user_name+"- guestTimestamp:"+_guestTimestamp);
+                    //mSocket.emit("syncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
+                    if(_guestTimestamp % 1 == 0){
 
-                    float guestTimestamp = Math.round(second*10)/10.0f;
-                    System.out.println(user_name+"- guestTimestamp:"+guestTimestamp);
-                    mSocket.emit("syncData", gson.toJson(new SyncData(true, guestTimestamp, user_name)));
-                    if(guestTimestamp % 1 == 0){
                         //mSocket.emit("gSyncData", gson.toJson(new SyncData(false, guestTimestamp, user_name)));
+                        System.out.println("guestTimestamp: 왜이래 "+ _guestTimestamp);
                         mSocket.on("sync", args -> {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
                             String hostVideoId = data.getVideoId();
@@ -212,23 +218,32 @@ public class RoomActivity extends AppCompatActivity {
                                 youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
                             } else {
                                 float firstHostTimestamp = data.getFirstHostTimestamp();
-                                float gap = hostTimestamp - guestTimestamp + firstHostTimestamp;
+                                float gap = hostTimestamp - _guestTimestamp;
                                 System.out.println("게스트 synchronize");
-                                boolean isPaused = data.getIsPaused();
+                                //boolean isPaused = data.getIsPaused();
 
-                                if (Math.abs(gap) >= 3.0) {   // gap이 3초 이상일 때
-                                    System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+guestTimestamp+"/ seekTo " + hostTimestamp);
+                                if (Math.abs(gap) >= 1.0) {   // gap이 3초 이상일 때
+                                    System.out.println("gap이 3초 이상:" +gap+"/ guestTimestamp: "+ _guestTimestamp+"/ seekTo " + hostTimestamp);
                                     PlayerConstants.PlayerState state = tracker.getState();
                                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                                         youTubePlayer.play();
                                     }
                                     youTubePlayer.seekTo(hostTimestamp);
+                                    /*
                                     if (isPaused) {
                                         youTubePlayer.pause();
                                     }
+                                    */
                                 }
                             }
                             // updateGuestSync(data, guestTimestamp);
+                        });
+                        mSocket.on("pause", args -> {
+                            PauseData data = gson.fromJson(args[0].toString(), PauseData.class);
+                            boolean isPaused = data.getIsPaused();
+                            if(isPaused == true){
+                                youTubePlayer.pause();
+                            }
                         });
                     }
 

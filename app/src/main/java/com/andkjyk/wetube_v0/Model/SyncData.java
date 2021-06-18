@@ -10,11 +10,11 @@ public class SyncData {
     private float guestTimestamp;
     private String guestFrom;
 
-    public SyncData(boolean isHost, boolean isPaused, float hostTimestamp, float guestTimestamp, String videoId, String roomCode){
+    public SyncData(boolean isHost, float hostTimestamp, String videoId, String roomCode){
         this.isHost = isHost;
-        this.isPaused = isPaused;
+        //this.isPaused = isPaused;
         this.hostTimestamp = hostTimestamp;
-        this.guestTimestamp = guestTimestamp;
+        //this.guestTimestamp = guestTimestamp;
         this.videoId = videoId;
         this.roomCode = roomCode;
     }
@@ -27,7 +27,7 @@ public class SyncData {
 
     public boolean getIsHost() { return isHost; }
 
-    public boolean getIsPaused() { return isPaused; }
+    //public boolean getIsPaused() { return isPaused; }
 
     public float getHostTimestamp() { return hostTimestamp; }
 
@@ -41,7 +41,7 @@ public class SyncData {
 
     public void setIsHost(boolean isHost) { this.isHost = isHost; }
 
-    public void setIsPaused(boolean isPaused) { this.isPaused = isPaused; }
+    //public void setIsPaused(boolean isPaused) { this.isPaused = isPaused; }
 
     public void setHostTimestamp(float hostTimestamp) { this.hostTimestamp = hostTimestamp; }
 
