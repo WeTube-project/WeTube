@@ -102,6 +102,10 @@ public class RoomActivity extends AppCompatActivity {
                             // 이 부분에서 서버랑 통신해서 hostName을 위임할 사용자 닉네임으로 바꾸고, 기존 호스트 정보는 삭제
                             // 위임할 사용자의 isHost를 true로 변경하기 위해서 UserFragment에서 서버와 통신하는 부분에서 isHost변수 또한 받아야할것같네요
                             // 현재 db_index.js에서는 userName, roomCode만 보내고 있어서요
+                            //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
+                            mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
+                            mSocket.disconnect();
+
                             Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -117,6 +121,10 @@ public class RoomActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // 서버와 통신해서 user 정보 삭제 (user_name 변수 사용)
+                            //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
+                            mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
+                            mSocket.disconnect();
+
                             Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -297,16 +305,12 @@ public class RoomActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjReq);
     }
-
+/*
     @Override
     protected void onStop() {
         super.onStop();
 
-        //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
-        mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
-        mSocket.disconnect();
 
-        Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-        startActivity(intent);
     }
+ */
 }
