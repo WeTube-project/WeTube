@@ -226,7 +226,7 @@ public class RoomActivity extends AppCompatActivity {
         //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
         mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
         mSocket.disconnect();
-
+        deleteRoom();
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -255,4 +255,28 @@ public class RoomActivity extends AppCompatActivity {
     }
 
      */
+    private void deleteRoom() {
+        String url = "http://3.37.36.38:3000/room";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("hostName", host_name);
+            params.put("roomCode", room_code);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.DELETE, url, params,
+                response -> {
+                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                }, error -> {
+            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
+    }
+
 }
