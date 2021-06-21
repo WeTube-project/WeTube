@@ -1,25 +1,29 @@
 package com.andkjyk.wetube_v0;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.andkjyk.wetube_v0.Adapter.ChatAdapter;
-import com.andkjyk.wetube_v0.Model.ChatItem;
-import com.andkjyk.wetube_v0.Model.ChatType;
-import com.andkjyk.wetube_v0.Model.MessageData;
 import com.andkjyk.wetube_v0.Model.PauseData;
 import com.andkjyk.wetube_v0.Model.RoomData;
 import com.andkjyk.wetube_v0.Model.SyncData;
@@ -27,7 +31,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.gson.Gson;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -45,18 +57,23 @@ import java.util.Date;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
-import static android.media.MediaPlayer.MetricsConstants.PLAYING;
-
 public class RoomActivity extends AppCompatActivity {
 
     public Socket mSocket;
     private Gson gson = new Gson();
 
-    private ImageView left_icon;
+    private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
     String room_title, room_code, host_name, user_name;
     boolean isHost;
     float _guestTimestamp;
+
+    private static final String TAG = "ted";
+
+    private static final String SEGMENT_SHARING = "share";
+    private static final String KEY_CODE = "code";
+
+    private static final int REQ_CODE_INVITE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +83,7 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         left_icon = findViewById(R.id.left_icon);
+        share_icon = findViewById(R.id.share_icon);
 
         Intent intent = getIntent();
         String SenderActivity = intent.getStringExtra("ActivityName");
@@ -132,6 +150,15 @@ public class RoomActivity extends AppCompatActivity {
                     AlertDialog alert = alt_bld.create();
                     alert.show();
                 }
+            }
+        });
+
+        share_icon.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                onDynamicLinkClick();
+                handleDeepLink();
             }
         });
 
@@ -305,6 +332,150 @@ public class RoomActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjReq);
     }
+
+    private Uri getSharingDeepLink() {
+        // get room code to share
+        String roomCode = room_code;
+        // https://andkjyk.page.link/wetube/share?code=3fa81c
+        return Uri.parse("https://andkjyk.page.link/wetube/" + SEGMENT_SHARING + "?" + KEY_CODE + "=" + roomCode);
+    }
+
+    private void onDynamicLinkClick() {
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(getSharingDeepLink())
+                .setDomainUriPrefix("//andkjyk.page.link")
+                .setAndroidParameters(
+                        new DynamicLink.AndroidParameters.Builder(getPackageName())
+                                .setMinimumVersion(125)
+                                .build())
+                .buildShortDynamicLink()
+                .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                        if (task.isSuccessful()) {
+                            Uri shortLink = task.getResult().getShortLink();
+                            try {
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, shortLink.toString());
+                                sendIntent.setType("text/plain");
+                                startActivity(Intent.createChooser(sendIntent, "Share"));
+                            } catch (ActivityNotFoundException ignored) {
+                            }
+                        } else {
+                            Log.w(TAG, task.toString());
+                        }
+                    }
+                });
+    }
+
+    private void handleDeepLink() {
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        if (pendingDynamicLinkData == null) {
+                            Log.d(TAG, "Doesn't have dynamic link");
+                            return;
+                        }
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+                        Log.d(TAG, "deepLink: " + deepLink);
+
+                        String segment = deepLink.getLastPathSegment();
+                        switch (segment) {
+                            case SEGMENT_SHARING:
+                                String code = deepLink.getQueryParameter(KEY_CODE);
+                                showNicknameSettingDialog(code);
+                                break;
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
+    }
+
+    private void showNicknameSettingDialog(String code) {
+        final EditText et = new EditText(this);
+
+        et.setSingleLine(true); //EditText를 한 줄로 제한
+        et.setTypeface(Typeface.DEFAULT); //글꼴 적용
+        et.setHint("닉네임은 2~8글자만 등록할 수 있습니다.");
+
+        FrameLayout container = new FrameLayout(this);
+        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+
+        et.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorPrimary));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            et.setTextCursorDrawable(R.drawable.dialog_cursur);
+        }
+        et.setLayoutParams(params);
+
+        container.addView(et);
+
+        final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
+
+        alt_bld.setMessage("사용하실 닉네임을 입력하세요.")
+                .setCancelable(false).setView(container).setPositiveButton("확인",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String userName = et.getText().toString();
+                        user_name = userName;
+                        /*
+                        Intent intent = new Intent(v.getContext(), RoomActivity.class);
+                        System.out.println("MainAdapter - 호스트이름: "+mainList.get(pos).getHostName());
+                        intent.putExtra("hostName", mainList.get(pos).getHostName());
+                        intent.putExtra("userName", userName);
+                        System.out.println("방코드: "+mainList.get(pos).getRoomCode());
+                        intent.putExtra("roomCode", mainList.get(pos).getRoomCode());    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..
+                        intent.putExtra("ActivityName", "Main");
+                        ((MainActivity) context).startActivity(intent);
+                         */
+                        user_name = userName;
+                        room_code = code;
+                        isHost = false;
+                        postUser();
+                    }
+
+                }).setNegativeButton("취소", null);
+
+        final AlertDialog alert = alt_bld.create();
+
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                //System.out.println("닉네임 길이: "+et.getText().length());
+                if(et.getText().length() >= 2 && et.getText().length() <= 8){
+                    //입력값이 2글자~8글자 일 때만 확인 버튼 활성화
+                    button.setEnabled(true);
+                }else{
+                    //그 외의 경우는 확인 버튼 비활성화
+                    button.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        alert.show();
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+    }
+
 /*
     @Override
     protected void onStop() {

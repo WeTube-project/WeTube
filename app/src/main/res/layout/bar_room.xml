@@ -13,6 +13,7 @@
         android:src="@drawable/ic_left" />
 
     <ImageView
+        android:id="@+id/share_icon"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginEnd="10dp"
