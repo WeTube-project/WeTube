@@ -88,7 +88,6 @@ public class PlaylistFragment extends Fragment {
             }
         });
 
-        getData();
         plRecyclerView = (RecyclerView) view.findViewById(R.id.rv_playlist);
         plRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
