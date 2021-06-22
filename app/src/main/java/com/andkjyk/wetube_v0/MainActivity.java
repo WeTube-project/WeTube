@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                             listRoomCode.add(room.getRoomCode());
                             listHostName.add(room.getHostName());
                         }
-
+roomItemList.clear();
                         for(int i = 0; i < listVideoName.size(); i++){
                             // 각 List의 값들을 data 객체에 set 해줍니다.
                             RoomItem data = new RoomItem();
