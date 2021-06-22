@@ -121,7 +121,7 @@ public class RoomActivity extends AppCompatActivity {
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isHost=="true"){
+                if(isHost.equals("true")){
                     // 호스트가 퇴장할 때
                     //System.out.println("호스트다아아아");
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
@@ -207,7 +207,7 @@ public class RoomActivity extends AppCompatActivity {
                 super.onStateChange(youTubePlayer, state);
                 youTubePlayer.addListener(tracker);
                 String videoId = tracker.getVideoId();
-                if(isHost=="true"){
+                if(isHost.equals("true")){
                     float hostTimestamp = tracker.getCurrentSecond();
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                         mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
@@ -222,7 +222,7 @@ public class RoomActivity extends AppCompatActivity {
                 youTubePlayer.addListener(tracker);
                 String videoId = tracker.getVideoId();
 
-                if(isHost=="true"){
+                if(isHost.equals("true")){
                     //System.out.println("HostVideoId:"+videoId);
                     float hostTimestamp = Math.round(second*10)/10.0f;
                     if(hostTimestamp % 1 == 0){
@@ -295,7 +295,7 @@ public class RoomActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("isHost", isHost);
                 bundle.putString("roomCode", room_code);
-                if(isHost=="true"){
+                if(isHost.equals("true")){
                     bundle.putString("host_name", host_name);
                 }else{
                     bundle.putString("host_name", host_name);
@@ -400,7 +400,7 @@ public class RoomActivity extends AppCompatActivity {
                         switch (segment) {
                             case SEGMENT_SHARING:
                                 String code = deepLink.getQueryParameter(KEY_CODE);
-                                showNicknameSettingDialog(code);
+                                // showNicknameSettingDialog(code);
                                 break;
                         }
                     }
@@ -453,7 +453,7 @@ public class RoomActivity extends AppCompatActivity {
                          */
                         user_name = userName;
                         room_code = code;
-                        isHost = false;
+                        isHost = "false";
                         postUser();
                     }
 
@@ -490,7 +490,7 @@ public class RoomActivity extends AppCompatActivity {
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
     }
 
-/*
+
     private void postDelete() {
         String url = "http://3.37.36.38:3000/delete";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -515,6 +515,8 @@ public class RoomActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjReq);
     }
+
+    /*
     @Override
     protected void onStop() {
         super.onStop();
