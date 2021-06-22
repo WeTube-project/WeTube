@@ -1,5 +1,6 @@
 package com.andkjyk.wetube_v0;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -23,7 +24,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.andkjyk.wetube_v0.Adapter.ChatAdapter;
+import com.andkjyk.wetube_v0.Model.ChatItem;
+import com.andkjyk.wetube_v0.Model.ChatType;
+import com.andkjyk.wetube_v0.Model.MessageData;
 import com.andkjyk.wetube_v0.Model.PauseData;
 import com.andkjyk.wetube_v0.Model.RoomData;
 import com.andkjyk.wetube_v0.Model.SyncData;
@@ -57,6 +65,8 @@ import java.util.Date;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
+import static android.media.MediaPlayer.MetricsConstants.PLAYING;
+
 public class RoomActivity extends AppCompatActivity {
 
     public Socket mSocket;
@@ -64,8 +74,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
-    String room_title, room_code, host_name, user_name;
-    boolean isHost;
+    String room_title, room_code, host_name, user_name, isHost;
     float _guestTimestamp;
 
     private static final String TAG = "ted";
@@ -94,23 +103,25 @@ public class RoomActivity extends AppCompatActivity {
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
             user_name = host_name;
-            isHost = true;
+            isHost = "true";
         } else if(SenderActivity.equals("Main")){
             user_name = intent.getStringExtra("userName");
             host_name = intent.getStringExtra("hostName");
             room_code = intent.getStringExtra("roomCode");
-            isHost = false;
+            isHost = "false";
             postUser();
         } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
             // 백엔드 작업 후 수정
         } else {
             System.out.println("RoomActivity가 intent를 제대로 받아오지 못함");
         }
-
+// userFragment로 roomCode 보내는 인텐트
+        Intent userIntent = new Intent(this, UsersFragment.class);
+        userIntent.putExtra("userRoomCode", room_code);
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isHost){
+                if(isHost=="true"){
                     // 호스트가 퇴장할 때
                     //System.out.println("호스트다아아아");
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(RoomActivity.this, R.style.AlertDialogStyle);
@@ -120,6 +131,7 @@ public class RoomActivity extends AppCompatActivity {
                             // 이 부분에서 서버랑 통신해서 hostName을 위임할 사용자 닉네임으로 바꾸고, 기존 호스트 정보는 삭제
                             // 위임할 사용자의 isHost를 true로 변경하기 위해서 UserFragment에서 서버와 통신하는 부분에서 isHost변수 또한 받아야할것같네요
                             // 현재 db_index.js에서는 userName, roomCode만 보내고 있어서요
+                            postDelete();
                             //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
                             mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
                             mSocket.disconnect();
@@ -139,6 +151,7 @@ public class RoomActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // 서버와 통신해서 user 정보 삭제 (user_name 변수 사용)
+                            postDelete();
                             //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
                             mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
                             mSocket.disconnect();
@@ -194,7 +207,7 @@ public class RoomActivity extends AppCompatActivity {
                 super.onStateChange(youTubePlayer, state);
                 youTubePlayer.addListener(tracker);
                 String videoId = tracker.getVideoId();
-                if(isHost){
+                if(isHost=="true"){
                     float hostTimestamp = tracker.getCurrentSecond();
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                         mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
@@ -209,7 +222,7 @@ public class RoomActivity extends AppCompatActivity {
                 youTubePlayer.addListener(tracker);
                 String videoId = tracker.getVideoId();
 
-                if(isHost){
+                if(isHost=="true"){
                     //System.out.println("HostVideoId:"+videoId);
                     float hostTimestamp = Math.round(second*10)/10.0f;
                     if(hostTimestamp % 1 == 0){
@@ -280,9 +293,9 @@ public class RoomActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.room_frame, selected).commit();
 
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isHost", isHost);
+                bundle.putString("isHost", isHost);
                 bundle.putString("roomCode", room_code);
-                if(isHost){
+                if(isHost=="true"){
                     bundle.putString("host_name", host_name);
                 }else{
                     bundle.putString("host_name", host_name);
@@ -319,6 +332,7 @@ public class RoomActivity extends AppCompatActivity {
         try {
             params.put("userName", user_name);
             params.put("roomCode", room_code);
+            params.put("isHost", isHost);
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -477,11 +491,40 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 /*
+    private void postDelete() {
+        String url = "http://3.37.36.38:3000/delete";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("userName", user_name);
+            params.put("roomCode", room_code);
+            params.put("isHost", isHost);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                response -> {
+                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                }, error -> {
+            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
+    }
     @Override
     protected void onStop() {
         super.onStop();
 
+        //퇴장(뒤로가기 혹은 앱 종료) 시 퇴장메세지 띄움
+        mSocket.emit("exit", gson.toJson(new RoomData(user_name, room_code)));
+        mSocket.disconnect();
 
+        Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+        startActivity(intent);
     }
  */
 }

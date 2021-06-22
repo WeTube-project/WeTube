@@ -1,5 +1,6 @@
 package com.andkjyk.wetube_v0;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -36,9 +37,9 @@ public class UsersFragment extends Fragment {
     private ImageView host_icon;
 
     private ArrayList<UserItem> userItems = new ArrayList<>();
-    private String host_name, user_name;
+    private String host_name, user_name, room_code;
     private ArrayList<String> user = new ArrayList<>();
-    private boolean isHost;
+    private String isHost;
     private int user_size = 0;
 
     public UsersFragment() {
@@ -48,21 +49,24 @@ public class UsersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
         getData();
         Bundle bundle = getArguments();
 
 
-        isHost = bundle.getBoolean("isHost");
+        isHost = bundle.getString("isHost");
+        room_code = bundle.getString("roomCode"); // 번들에서 roomCode도 받아옴
         tv_my_name = view.findViewById(R.id.tv_my_name);
 
-        if(isHost == true){
+        if(isHost == "true"){
             host_name = bundle.getString("host_name");
             tv_my_name.setText(host_name);
             host_icon = view.findViewById(R.id.host_icon);
@@ -102,14 +106,19 @@ public class UsersFragment extends Fragment {
                         JSONArray users = response.getJSONArray("users");
                         //System.out.println("user_size = " + user_size + " userSize = " + response.getInt("userSize"));
                         user_size = response.getInt("userSize");
-                        user.clear();
-                        for(int i = 0; i < user_size; i++) {
-                            user.add(users.getJSONObject(i).getString("userName"));
-                        }
-                        Toast.makeText(getContext(), "user: " + user , Toast.LENGTH_LONG).show();
 
+                        user.clear();
+                        for(int i = 0; i < user_size; i++) { //roomCode 받아온거랑 서버에서 받은 user테이블이랑 비교해서 같은 방에있는 유저 판별
+                            if(users.getJSONObject(i).getString("roomCode").equals(room_code)) {
+                                user.add(users.getJSONObject(i).getString("userName"));
+                            }
+                        }
                         ArrayList<String> list = new ArrayList<>();
                         int len = user.size();
+                        //Toast.makeText(getContext(), "roomCode: " +users.getJSONObject(0).getString("roomCode")  , Toast.LENGTH_LONG).show();
+                       Toast.makeText(getContext(), "user: " + user+len , Toast.LENGTH_LONG).show();
+
+
                         //System.out.println("length: "+user.size());
 
                         userItems.clear();
