@@ -46,7 +46,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         this.context = context;
     }
 
-    //public void addItems(ArrayList<PlaylistItem> items){ this.plList = items; }
+    public void addItems(ArrayList<PlaylistItem> items){ this.plList = items; }
     public void addItem(PlaylistItem item){ plList.add(item); }
 
     @NonNull

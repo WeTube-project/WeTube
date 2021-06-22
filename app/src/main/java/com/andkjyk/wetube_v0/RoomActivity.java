@@ -515,7 +515,6 @@ public class RoomActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjReq);
     }
-
     /*
     @Override
     protected void onStop() {
@@ -527,6 +526,5 @@ public class RoomActivity extends AppCompatActivity {
 
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         startActivity(intent);
-    }
- */
+    } */
 }

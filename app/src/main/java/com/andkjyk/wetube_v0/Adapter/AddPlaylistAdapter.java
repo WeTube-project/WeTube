@@ -71,6 +71,8 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
                         } else{
                             sTitle = title;
                         }
+                        String finalSTitle = sTitle;
+                        System.out.println("짤렸는지 확인: "+finalSTitle);
                         alt_bld.setMessage(sTitle+"을(를) 플레이리스트에 추가하시겠습니까?").setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -78,7 +80,7 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
                                 intent.putExtra("s_videoId", videoId);
                                 intent.putExtra("s_publisher", publisher);
                                 intent.putExtra("s_thumbnailUrl", thumbnailUrl);
-                                intent.putExtra("s_title", title);
+                                intent.putExtra("s_title", finalSTitle);
                                 ((AddPlaylistActivity) context).setResult(Activity.RESULT_OK, intent);
                                 ((AddPlaylistActivity) context).finish();
                             }
