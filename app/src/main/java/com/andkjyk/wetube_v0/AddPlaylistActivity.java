@@ -213,7 +213,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
             data.setThumbnailURL(listThumbnail.get(i));
             data.setId(listId.get(i));
             data.setRoomCode(roomCode);
-            postMedia(roomCode, listTitle.get(i), listPublisher.get(i), listThumbnail.get(i), listId.get(i));
+            //postMedia(roomCode, listTitle.get(i), listPublisher.get(i), listThumbnail.get(i), listId.get(i));
             searchedItemList.add(data);
         }
     }

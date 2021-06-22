@@ -47,8 +47,6 @@ public class PlaylistFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -62,7 +60,6 @@ public class PlaylistFragment extends Fragment {
             postMedia(roomCode, title, publisher,thumbnailUrl, videoId);
             plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl, roomCode));
             plAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -91,6 +88,7 @@ public class PlaylistFragment extends Fragment {
             }
         });
 
+        getData();
         plRecyclerView = (RecyclerView) view.findViewById(R.id.rv_playlist);
         plRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
