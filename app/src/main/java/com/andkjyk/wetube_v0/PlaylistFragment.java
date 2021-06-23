@@ -108,9 +108,9 @@ public class PlaylistFragment extends Fragment {
 
     private void getData(){
         //System.out.println("getData() 호출됨");
-        String url = "http://3.37.36.38:3000/media";
+        String media_url = "http://3.37.36.38:3000/media";
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, media_url, null,
                 response -> {
                     try {
                         int roominfo_size = response.getInt("roominfoSize");

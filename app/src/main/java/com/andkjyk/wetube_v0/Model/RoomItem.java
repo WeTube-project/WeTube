@@ -11,6 +11,15 @@ public class RoomItem {
         this.roomCode = roomCode;
     }
 
+    public RoomItem(String roomTitle, String headcount, String videoName, String thumbnail, String hostName, String roomCode) {
+        this.roomTitle = roomTitle;
+        this.headcount = headcount;
+        this.videoName = videoName;
+        this.thumbnail = thumbnail;
+        this.hostName = hostName;
+        this.roomCode = roomCode;
+    }
+
     public String getRoomTitle(){ return roomTitle; }
 
     public String getHeadcount(){
