@@ -47,6 +47,8 @@ public class PlaylistFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -56,10 +58,11 @@ public class PlaylistFragment extends Fragment {
             publisher = data.getStringExtra("s_publisher");
             thumbnailUrl = data.getStringExtra("s_thumbnailUrl");
             title = data.getStringExtra("s_title");
-            System.out.println("영상 제목 짤렸는지 확인~: "+title);
+            //System.out.println("영상 제목 짤렸는지 확인~: "+title);
             postMedia(roomCode, title, publisher,thumbnailUrl, videoId);
             plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl, roomCode));
             plAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -74,6 +77,10 @@ public class PlaylistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_playlist, container, false);
+
+        Bundle bundle = getArguments();
+        roomCode = bundle.getString("roomCode");
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.playlist_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,13 +110,14 @@ public class PlaylistFragment extends Fragment {
     }
 
     private void getData(){
-        System.out.println("getData() 호출됨");
+        //System.out.println("getData() 호출됨");
         String url = "http://3.37.36.38:3000/media";
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
                         int roominfo_size = response.getInt("roominfoSize");
+                        //System.out.println("roominfo 크기: "+roominfo_size);
                         JSONArray roominfoarr = response.getJSONArray("roominfo");
 
                         ArrayList<String> listPlVideoName = new ArrayList<>();
@@ -117,50 +125,59 @@ public class PlaylistFragment extends Fragment {
                         ArrayList<String> listPlVideoId = new ArrayList<>();
                         ArrayList<String> listPlThumbnailURL = new ArrayList<>();
 
-                        Toast.makeText(getActivity().getApplicationContext(), "arr"+roominfoarr , Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), "arr"+roominfoarr , Toast.LENGTH_LONG).show();
                         Toast.makeText(getActivity().getApplicationContext(), "length"+roominfo_size , Toast.LENGTH_LONG).show();
 
+                        int numOfVideo = 0;
                         for(int i = 0; i < roominfo_size; i++){
-                            JSONObject jsonObject = roominfoarr.getJSONObject(i);
+                            String rcv_roomCode = roominfoarr.getJSONObject(i).getString("roomCode");
+                            if(rcv_roomCode.equals(roomCode)) {
+                                JSONObject jsonObject = roominfoarr.getJSONObject(i);
 
-                            String title = jsonObject.getString("title");
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-                            } else {
-                                title = String.valueOf(Html.fromHtml(title));
+                                String title = jsonObject.getString("title");
+                                //System.out.println("제목:" + title);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+                                } else {
+                                    title = String.valueOf(Html.fromHtml(title));
+                                }
+
+                                PlaylistItem playlist = new PlaylistItem(
+                                        title,
+                                        jsonObject.getString("publisher"),
+                                        jsonObject.getString("videoId"),
+                                        jsonObject.getString("thumbnailUrl"),
+                                        roomCode
+                                );
+
+                                listPlVideoName.add(playlist.getPlVideoName());
+                                listPlPublisher.add(playlist.getPlPublisher());
+                                listPlVideoId.add(playlist.getPlVideoId());
+                                listPlThumbnailURL.add(playlist.getPlThumbnailURL());
+
+                                numOfVideo++;
                             }
-
-                            PlaylistItem playlist = new PlaylistItem(
-                                    title,
-                                    jsonObject.getString("publisher"),
-                                    jsonObject.getString("videoId"),
-                                    jsonObject.getString("thumbnailUrl"),
-                                    roomCode
-                            );
-
-                            listPlVideoName.add(playlist.getPlVideoName());
-                            listPlPublisher.add(playlist.getPlPublisher());
-                            listPlVideoId.add(playlist.getPlVideoId());
-                            listPlThumbnailURL.add(playlist.getPlThumbnailURL());
                         }
 
                         plItemList.clear();
 
-                        for(int i = 0; i < roominfo_size; i++){
+                        for(int i = 0; i < numOfVideo; i++){
                             PlaylistItem data = new PlaylistItem();
-                            System.out.println("정보: "+listPlVideoName.get(i)+" "+listPlPublisher.get(i));
+                            //System.out.println("정보: " + listPlVideoName.get(i) + " " + listPlPublisher.get(i));
                             data.setPlVideoName(listPlVideoName.get(i));
                             data.setPlPublisher(listPlPublisher.get(i));
                             data.setPlVideoId(listPlVideoId.get(i));
                             data.setPlThumbnailURL(listPlThumbnailURL.get(i));
                             data.setPlRoomCode(roomCode);
 
-                            System.out.println("data 정보: "+data.getPlVideoName());
+                            //System.out.println("data 정보: " + data.getPlVideoName());
 
                             plItemList.add(data);
-                            plAdapter.addItems(plItemList);
-                            plAdapter.notifyDataSetChanged();
                         }
+
+                        plAdapter.addItems(plItemList);
+                        plAdapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
