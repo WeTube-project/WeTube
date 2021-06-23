@@ -142,11 +142,11 @@ public class UsersFragment extends Fragment {
                         usersAdapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
-                        Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getContext(), "get user fail" , Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }, error -> {
-            Toast.makeText(getContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
         requestQueue.add(jsonObjReq);
 

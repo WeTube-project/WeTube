@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //  Toast.makeText(getActivity().getApplicationContext(), "msg from server => title: " , Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(this, "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                             );
 
                             listTitle.add(room.getRoomTitle());
-                            listHeadcount.add(15+"");
+                            listHeadcount.add(1+"");
 
                             System.out.println("중간점검");
 
@@ -226,9 +226,9 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(getApplicationContext(), "msg from server => title: " + room_title + ", host : " + host_name, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "msg from server => title: " + room_title + ", host : " + host_name, Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq2);

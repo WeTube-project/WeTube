@@ -211,7 +211,7 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 //String videoId = video_id;
-                youTubePlayer.loadVideo("wV81QXfN5O8", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
+                youTubePlayer.loadVideo("wgbr7exUnzE", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
             @Override
@@ -371,9 +371,9 @@ public class RoomActivity extends AppCompatActivity {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
-                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);
@@ -540,9 +540,9 @@ public class RoomActivity extends AppCompatActivity {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
-                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);

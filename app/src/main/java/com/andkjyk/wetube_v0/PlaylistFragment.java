@@ -122,7 +122,7 @@ public class PlaylistFragment extends Fragment {
                         ArrayList<String> listPlThumbnailURL = new ArrayList<>();
 
                         //Toast.makeText(getActivity().getApplicationContext(), "arr"+roominfoarr , Toast.LENGTH_LONG).show();
-                        Toast.makeText(getActivity().getApplicationContext(), "length"+roominfo_size , Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), "length"+roominfo_size , Toast.LENGTH_LONG).show();
 
                         int numOfVideo = 0;
                         for(int i = 0; i < roominfo_size; i++){
@@ -212,9 +212,9 @@ public class PlaylistFragment extends Fragment {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
-                    Toast.makeText(getActivity().getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity().getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(getActivity().getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);

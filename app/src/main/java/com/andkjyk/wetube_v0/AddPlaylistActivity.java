@@ -237,9 +237,9 @@ public class AddPlaylistActivity extends AppCompatActivity {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
-                    Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
                 }, error -> {
-            Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);
