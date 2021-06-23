@@ -86,6 +86,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                                         System.out.println("MainAdapter - 호스트이름: "+mainList.get(pos).getHostName());
                                         intent.putExtra("hostName", mainList.get(pos).getHostName());
                                         intent.putExtra("userName", userName);
+                                        intent.putExtra("videoId", mainList.get(pos).getVideoId());
                                         System.out.println("방코드: "+mainList.get(pos).getRoomCode());
                                         intent.putExtra("roomCode", mainList.get(pos).getRoomCode());    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..
                                         intent.putExtra("ActivityName", "Main");

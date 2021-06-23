@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -74,8 +75,9 @@ public class RoomActivity extends AppCompatActivity {
 
     private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
-    String room_title, room_code, host_name, user_name, isHost;
+    String room_title, room_code, host_name, user_name, isHost, video_id;
     float _guestTimestamp;
+    boolean isVideoSet = false;
 
     private static final String TAG = "ted";
 
@@ -83,6 +85,15 @@ public class RoomActivity extends AppCompatActivity {
     private static final String KEY_CODE = "code";
 
     private static final int REQ_CODE_INVITE = 1000;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(video_id == null && isHost.equals("true")){
+            video_id = data.getStringExtra("s_videoId");
+            isVideoSet = true;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +119,7 @@ public class RoomActivity extends AppCompatActivity {
             user_name = intent.getStringExtra("userName");
             host_name = intent.getStringExtra("hostName");
             room_code = intent.getStringExtra("roomCode");
+            video_id = intent.getStringExtra("videoId");
             isHost = "false";
             postUser();
         } else if(SenderActivity.equals("AddPlaylist")) {   // AddPlaylist에서 뒤로가기 했을 때
@@ -198,35 +210,47 @@ public class RoomActivity extends AppCompatActivity {
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                String videoId = "wV81QXfN5O8";
-                youTubePlayer.loadVideo(videoId, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
+                //String videoId = video_id;
+                youTubePlayer.loadVideo("wV81QXfN5O8", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
             @Override
             public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
                 super.onStateChange(youTubePlayer, state);
                 youTubePlayer.addListener(tracker);
-                String videoId = tracker.getVideoId();
+                //String videoId = tracker.getVideoId();
                 if(isHost.equals("true")){
                     float hostTimestamp = tracker.getCurrentSecond();
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                         mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
                     }
-                    mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
+                    mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
+
+                    if(isVideoSet){
+                        System.out.println("확인2");
+                        youTubePlayer.loadVideo(video_id, 0);
+                        isVideoSet = false;
+                    }
                 }
+
+                System.out.println("확인1");
+
+
             }
+
+
 
             @Override
             public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {
                 super.onCurrentSecond(youTubePlayer, second);
                 youTubePlayer.addListener(tracker);
-                String videoId = tracker.getVideoId();
+                //String videoId = tracker.getVideoId();
 
                 if(isHost.equals("true")){
-                    //System.out.println("HostVideoId:"+videoId);
+                    //System.out.println("보내는 HostVideoId:"+video_id);
                     float hostTimestamp = Math.round(second*10)/10.0f;
                     if(hostTimestamp % 1 == 0){
-                        mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, videoId, room_code)));
+                        mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
                     }
                 } else{
                     //System.out.println("GuestVideoId:"+videoId);
@@ -237,10 +261,12 @@ public class RoomActivity extends AppCompatActivity {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
                             String hostVideoId = data.getVideoId();
                             float hostTimestamp = data.getHostTimestamp();
-                            //System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
-                            if(false){   // if(!videoId.equals(hostVideoId))인데 둘다 null을 return하는 문제 있어서 해결 필요, 일단 false로 처리
-                                //System.out.println("videoId: "+videoId+"/ hostVideoId: "+hostVideoId);
-                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                            System.out.println("hostVideoId: "+hostVideoId);
+                            if(!video_id.equals(hostVideoId) && hostVideoId != null){   // if(!videoId.equals(hostVideoId))인데 둘다 null을 return하는 문제 있어서 해결 필요, 일단 false로 처리
+                                System.out.println("여기 hostVideoId: + "+hostVideoId);
+                                video_id = hostVideoId;
+                                isVideoSet = true;
+                                //youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
                             } else {
                                 float gap = hostTimestamp - _guestTimestamp;
                                 //System.out.println("게스트 synchronize");
@@ -253,6 +279,12 @@ public class RoomActivity extends AppCompatActivity {
                                     }
                                     youTubePlayer.seekTo(hostTimestamp);
                                 }
+                            }
+                            if(isVideoSet){
+                                System.out.println("확인3");
+                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                                youTubePlayer.play();
+                                isVideoSet = false;
                             }
                         });
                         mSocket.on("pause", args -> {

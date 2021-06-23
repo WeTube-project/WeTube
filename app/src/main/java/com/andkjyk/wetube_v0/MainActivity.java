@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> listHeadcount = new ArrayList<>();
     ArrayList<String> listVideoName = new ArrayList<>();
     //ArrayList<String> listPublisher = new ArrayList<>();
-    //ArrayList<String> listVideoId = new ArrayList<>();
+    ArrayList<String> listVideoId = new ArrayList<>();
     ArrayList<String> listThumbnail = new ArrayList<>();
     ArrayList<String> listRoomCode = new ArrayList<>();
     ArrayList<String> m_listRoomCode = new ArrayList<>();
@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         listVideoName.set(i, title);
                                         listThumbnail.set(i, jsonObject.getString("thumbnailUrl"));
+                                        listVideoId.set(i, jsonObject.getString("videoId"));
 
                                         System.out.println("뒷부분 roomCode: "+roomCode + "/ "+i);
                                     } else{
@@ -133,35 +134,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        /*
-                        for(int i = 0; i < roominfo_size; i++){
-                            JSONObject jsonObject = roominfoarr.getJSONObject(i);
-                            String roomCode = jsonObject.getString("roomCode");
-                            //if(m_listRoomCode.containsAll(listRoomCode))
-                            if(!m_listRoomCode.contains(roomCode) || i == 0){
-                                //m_listRoomCode.add(roomCode);
-
-                                String title = jsonObject.getString("title");
-                                //System.out.println("제목:" + title);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
-                                } else {
-                                    title = String.valueOf(Html.fromHtml(title));
-                                }
-
-                                listVideoName.set(i, title);
-                                listPublisher.set(i, jsonObject.getString("publisher"));
-                                listVideoId.set(i, jsonObject.getString("videoId"));
-                                listThumbnail.set(i, jsonObject.getString("thumbnailUrl"));
-
-                                System.out.println("앞부분 roomCode: "+roomCode + "/ "+i);
-                            } else{
-                                System.out.println("roomCode 중복: "+i);
-                            }
-
-                        }
-
-                         */
                         //System.out.println("listVideoId 크기: "+listVideoId.size());
 
                         roomItemList.clear();
@@ -175,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                             data.setThumbnail(listThumbnail.get(i));
                             data.setRoomCode(listRoomCode.get(i));
                             data.setHostName(listHostName.get(i));
+                            data.setVideoId(listVideoId.get(i));
 
                             System.out.println("확인확인: "+listTitle.get(i)+"roomCode"+listRoomCode.get(i));
 
@@ -216,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                         listThumbnail.clear();
                         listRoomCode.clear();
                         listVideoName.clear();
+                        listVideoId.clear();
                         m_listRoomCode.clear();
                         for(int i = 0; i < room_size; i++){
                             JSONObject jsonObject = roomarr.getJSONObject(i);
@@ -241,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                             listVideoName.add(title);
                             listThumbnail.add("https://i.ytimg.com/vi/wV81QXfN5O8/hqdefault.jpg");
                             listRoomCode.add(room.getRoomCode());
-
+                            listVideoId.add("wV81QXfN5O8");
                             listHostName.add(room.getHostName());
                         }
 

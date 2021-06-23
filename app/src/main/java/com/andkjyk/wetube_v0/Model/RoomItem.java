@@ -1,7 +1,7 @@
 package com.andkjyk.wetube_v0.Model;
 
 public class RoomItem {
-    private String roomTitle, headcount, videoName, thumbnail, roomCode, hostName;
+    private String roomTitle, headcount, videoName, thumbnail, roomCode, hostName, videoId;
 
     public RoomItem(){};
 
@@ -36,6 +36,8 @@ public class RoomItem {
 
     public String getHostName() { return hostName; }
 
+    public String getVideoId() { return videoId; }
+
     public void setRoomTitle(String roomTitle){
         this.roomTitle = roomTitle;
     }
@@ -53,4 +55,6 @@ public class RoomItem {
     public void setRoomCode(String roomCode) { this.roomCode = roomCode; }
 
     public void setHostName(String hostName) { this.hostName = hostName; }
+
+    public void setVideoId(String videoId) { this.videoId = videoId; }
 }
