@@ -47,8 +47,6 @@ public class PlaylistFragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -62,7 +60,6 @@ public class PlaylistFragment extends Fragment {
             postMedia(roomCode, title, publisher,thumbnailUrl, videoId);
             plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl, roomCode));
             plAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -117,7 +114,6 @@ public class PlaylistFragment extends Fragment {
                 response -> {
                     try {
                         int roominfo_size = response.getInt("roominfoSize");
-                        //System.out.println("roominfo 크기: "+roominfo_size);
                         JSONArray roominfoarr = response.getJSONArray("roominfo");
 
                         ArrayList<String> listPlVideoName = new ArrayList<>();
