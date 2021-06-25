@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UsersFragment extends Fragment {
+public class UsersFragment extends Fragment {   // 사용자 목록 fragment
 
     private RecyclerView usersRecyclerView;
     private UsersAdapter usersAdapter;
@@ -96,7 +96,7 @@ public class UsersFragment extends Fragment {
         return view;
     }
 
-    private void getData(){
+    private void getData(){     // 사용자 목록 데이터를 서버에서 받아옴
         String url = "http://3.37.36.38:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 

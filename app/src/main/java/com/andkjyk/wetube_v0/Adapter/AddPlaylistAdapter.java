@@ -52,7 +52,7 @@ public class AddPlaylistAdapter extends RecyclerView.Adapter<AddPlaylistAdapter.
             itemView.setOnClickListener(new View.OnClickListener(){
 
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {    // 검색해서 나온 영상 목록 중에 원하는 영상을 선택하면 ~를 플레이리스트에 추가할것인지 확인하는 팝업을 띄움. 확인 누르면 RoomActivity로 이동
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
 

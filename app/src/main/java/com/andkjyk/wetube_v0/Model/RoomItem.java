@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class RoomItem {
+public class RoomItem {     // 방 목록을 띄우기 위해 각 방에 대한 정보를 담는 클래스
     private String roomTitle, headcount, videoName, thumbnail, roomCode, hostName, videoId;
 
     public RoomItem(){};

@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
     RequestQueue requestQueue;
     private RecyclerView plRecyclerView;
     private PlaylistAdapter plAdapter;
@@ -48,7 +48,7 @@ public class PlaylistFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {  // AddPlaylistActivity에서 돌아왔을 때 호출됨
         super.onActivityResult(requestCode, resultCode, data);
 
         if(data != null){
@@ -106,7 +106,7 @@ public class PlaylistFragment extends Fragment {
         return view;
     }
 
-    private void getData(){
+    private void getData(){     // 재생 목록 데이터를 서버에서 가져옴
         //System.out.println("getData() 호출됨");
         String media_url = "http://3.37.36.38:3000/media";
 
@@ -185,7 +185,7 @@ public class PlaylistFragment extends Fragment {
         requestQueue.add(jsonObjReq);
     }
 
-    private void postMedia(String roomCode, String videoTitle, String publisher, String thumbnailUrl, String videoId) {
+    private void postMedia(String roomCode, String videoTitle, String publisher, String thumbnailUrl, String videoId) { // 재생목록에 추가된 영상에 대한 데이터를 서버에 보냄
         String url = "http://3.37.36.38:3000/media";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         requestQueue.start();

@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class SyncData {
+public class SyncData {     // 동기화 기능을 위해 서버로 보내질 동기화에 필요한 데이터를 담는 클래스
     private boolean isHost;
     private float hostTimestamp;
     private String videoId;

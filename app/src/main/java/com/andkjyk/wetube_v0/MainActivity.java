@@ -30,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {   //방 목록 액티비티
 
     RequestQueue requestQueue;
     private MainAdapter adapter;
@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh() {   // 아래로 당기는 모션 취했을 때 방 목록 업데이트
                 // 리사이클러뷰에 LinearLayoutManager 객체 지정.
                 RecyclerView recyclerView = findViewById(R.id.room_recycler);
                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
-                // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
+                // 리사이클러뷰에 MainAdapter 객체 지정.
                 adapter = new MainAdapter(MainActivity.this, roomItemList);
                 recyclerView.setAdapter(adapter);
                 requestQueue = Volley.newRequestQueue(MainActivity.this);
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.room_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
+        // 리사이클러뷰에 MainAdapter 객체 지정.
         adapter = new MainAdapter(this, roomItemList);
         recyclerView.setAdapter(adapter);
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         //getRoomData();
     }
 
-    private void getMediaData(){
+    private void getMediaData(){    // 재생목록 데이터를 서버에서 가져옴
         String media_url = "http://3.37.36.38:3000/media";
 
         //requestQueue.start();
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         //여기까지
     }
 
-    private void getData(){
+    private void getData(){     // 방 목록 데이터를 서버에서 가져옴
         String url = "http://3.37.36.38:3000/room";
         
         JsonObjectRequest jsonObjReq2 = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonObjReq2);
     }
 
-    private class FABClickListener implements View.OnClickListener {
+    private class FABClickListener implements View.OnClickListener {    // 우측 하단의 + 버튼을 누르면 AddRoomActivity로 이동해서 방 개설 가능
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);

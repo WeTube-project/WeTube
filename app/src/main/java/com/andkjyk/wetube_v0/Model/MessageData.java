@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class MessageData {
+public class MessageData {  // 소켓에 담아져 서버로 전송될 메세지 데이터를 담는 클래스
 
     private String type;
     private String from;

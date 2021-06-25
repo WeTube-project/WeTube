@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class AddRoomActivity extends AppCompatActivity {
+public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티비티
 
     private static final int ADDROOM_REQUEST_CODE = 322;
     private ImageView left_icon;
@@ -42,7 +42,7 @@ public class AddRoomActivity extends AppCompatActivity {
     boolean isCodeEntered, isTitleEntered, isHostNameEntered;
     String room_code, room_title, host_name;
 
-    private void postRoom() {
+    private void postRoom() {   // 개설된 방의 정보를 서버에 보냄
         String url = "http://3.37.36.38:3000/room";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
@@ -79,7 +79,7 @@ public class AddRoomActivity extends AppCompatActivity {
         room_title_input = findViewById(R.id.room_title_input);
         host_name_input = findViewById(R.id.host_name_input);
 
-        left_icon.setOnClickListener(new View.OnClickListener() {
+        left_icon.setOnClickListener(new View.OnClickListener() {   // 좌측 상단 뒤로가기 아이콘을 누르면 방 목록 액티비티로 이동
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddRoomActivity.this, MainActivity.class);
@@ -89,7 +89,7 @@ public class AddRoomActivity extends AppCompatActivity {
 
         complete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {    // 완료 버튼을 누르면 기입한 정보를 서버로 보냄
                 room_title = room_title_input.getText().toString();
                 host_name = host_name_input.getText().toString();
                 room_code = code.getText().toString();
@@ -104,7 +104,7 @@ public class AddRoomActivity extends AppCompatActivity {
             }
         });
 
-        random_btn.setOnClickListener(new View.OnClickListener(){
+        random_btn.setOnClickListener(new View.OnClickListener(){   // 버튼을 누르면 랜덤으로 roomcode를 생성
             @Override
             public void onClick(View view) {
                 room_code = randomCodeMaker();
@@ -125,7 +125,7 @@ public class AddRoomActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable edit) {
+            public void afterTextChanged(Editable edit) {   // 방 제목 칸이 비어있는지 감지
                 String s = edit.toString();
                 isTitleEntered = true;
                 System.out.println("변경된 text: "+ s);
@@ -145,7 +145,7 @@ public class AddRoomActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable edit) {
+            public void afterTextChanged(Editable edit) {       // 방 코드 칸이 비어있는지 감지
                 String s = edit.toString();
                 isCodeEntered = true;
                 System.out.println("변경된 text: "+ s);
@@ -153,7 +153,7 @@ public class AddRoomActivity extends AppCompatActivity {
             }
         });
 
-        host_name_input.addTextChangedListener(new TextWatcher() {
+        host_name_input.addTextChangedListener(new TextWatcher() {      // 호스트 이름 칸이 비어있는지 감지
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -174,7 +174,7 @@ public class AddRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void enableCompleteBtn(String editable, int pos) {
+    private void enableCompleteBtn(String editable, int pos) {  // afterTextChanged로 각 칸이 비어있는지 감지한 후에, 모든 칸이 비어있지 않으면 완료버튼이 활성화되고 그렇지 않은 경우 비활성화됨
         if(isTitleEntered == true && isCodeEntered == true &&  isHostNameEntered == true && editable.trim().isEmpty() == false){
             complete_btn.setTextColor(Color.parseColor("#FF7473"));
             complete_btn.setClickable(true);
@@ -193,7 +193,7 @@ public class AddRoomActivity extends AppCompatActivity {
         }
     }
 
-    private String randomCodeMaker(){
+    private String randomCodeMaker(){   // 랜덤으로 방 코드를 생성
         Random rnd =new Random();
         StringBuffer buf =new StringBuffer();
 

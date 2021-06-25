@@ -95,7 +95,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView contentText;
         TextView sendTimeText;
 
-        public LeftViewHolder(View itemView) {
+        public LeftViewHolder(View itemView) {      // 채팅 fragment의 좌측에 자신 외의 사용자가 보낸 메세지말풍선이 뜸
             super(itemView);
             nameText = itemView.findViewById(R.id.rcvName);
             contentText = itemView.findViewById(R.id.rcvContent);
@@ -113,7 +113,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView contentText;
         TextView sendTimeText;
 
-        public RightViewHolder(View itemView) {
+        public RightViewHolder(View itemView) {     // 채팅 fragment의 우측에 자신이 보낸 메세지 말풍선이 뜸
             super(itemView);
             contentText = itemView.findViewById(R.id.sentContent);
             sendTimeText = itemView.findViewById(R.id.sendTime);

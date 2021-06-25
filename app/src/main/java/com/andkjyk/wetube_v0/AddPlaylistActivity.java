@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AddPlaylistActivity extends AppCompatActivity {
+public class AddPlaylistActivity extends AppCompatActivity {    // 재생목록에 영상을 추가하는 액티비티
 
     public static final String KEY = "AIzaSyCE9vus0pcVAAdXOiMhdlmQnOBqgqONcHQ";
 
@@ -68,7 +68,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
         left_icon.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick(View v)     // 좌측 상단의 뒤로가기 아이콘을 누르면 RoomActivity로 이동
             {
                 Intent intent = new Intent(AddPlaylistActivity.this, RoomActivity.class);
                 intent.putExtra("ActivityName", "AddPlaylist"); // RoomActivity에서 ActivityName으로 분기처리 했기 때문에 필요.. 없으면 에러
@@ -86,7 +86,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
+            public boolean onQueryTextSubmit(String s) {    // 검색 버튼을 눌렀을 때 YouTube api에서 데이터를 받아와서 리사이클러뷰를 띄워줌
                 // 입력받은 문자열 처리
                 final String query = s;
                 //Toast.makeText(LocalSearchActivity.this, "[검색버튼클릭] 검색어 = "+s, Toast.LENGTH_LONG).show();
@@ -124,7 +124,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
         //getData();
     }
 
-    private void getYoutubeSearch(String query) {
+    private void getYoutubeSearch(String query) {       // YouTube api를 통해서 검색한 키워드에 맞는 정보를 받아옴
         try {
             HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
             final JsonFactory JSON_FACTORY = new GsonFactory();
@@ -165,7 +165,7 @@ public class AddPlaylistActivity extends AppCompatActivity {
         }
     }
 
-    public void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
+    public void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {   // api에서 받아온 데이터를 저장
         if (!iteratorSearchResults.hasNext()) {
             System.out.println(" There aren't any results for your query.");
         }

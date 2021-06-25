@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class ChatItem {
+public class ChatItem {     // chatfragment에 띄워질 메세지 정보를 담을 클래스
 
     private String name;
     private String content;

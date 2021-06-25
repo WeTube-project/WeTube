@@ -30,7 +30,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment {    // 채팅 fragment
     private Gson gson = new Gson();
     private RecyclerView chatRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -93,7 +93,7 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 sendMessage(view);
-            }
+            }   // 전송 아이콘을 누르면 서버로 데이터를 보냄
         });
 
         // socket.io 연결
@@ -127,7 +127,7 @@ public class ChatFragment extends Fragment {
     }
 
 
-    private void sendMessage(View view) {
+    private void sendMessage(View view) {   // 소켓을 통해 메세지 데이터를 서버에 전송
         EditText msg = view.findViewById(R.id.editText);
         ((RoomActivity) getActivity()).mSocket.emit("newMessage", gson.toJson(new MessageData("MESSAGE",
                 user_name, room_code, msg.getText().toString(), System.currentTimeMillis())));

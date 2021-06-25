@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class SearchedVideoItem {
+public class SearchedVideoItem {    // AddPlaylistActivity에서 검색된 영상 목록을 띄우기 위해 YouTube api 검색결과로 나온 각 영상의 정보를 담는 클래스
     private String title;
     private String publisher;
     private String thumbnailURL;

@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class PlaylistItem {
+public class PlaylistItem {     // Playlist 탭에 띄워질 영상에 대한 정보를 담는 클래스
 
     private String plVideoName, plPublisher, plVideoId, plThumbnailURL, plRoomCode;
 

@@ -1,6 +1,6 @@
 package com.andkjyk.wetube_v0.Model;
 
-public class UserItem {
+public class UserItem {     // UsersFragment에 띄워질 사용자 정보를 담는 클래스
     private String userName;
 
     public String getUserName(){

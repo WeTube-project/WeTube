@@ -68,7 +68,7 @@ import io.socket.client.Socket;
 
 import static android.media.MediaPlayer.MetricsConstants.PLAYING;
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 보여지는 액티비티
 
     public Socket mSocket;
     private Gson gson = new Gson();
@@ -87,7 +87,7 @@ public class RoomActivity extends AppCompatActivity {
     private static final int REQ_CODE_INVITE = 1000;
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   // AddPlaylistActivity로 이동했다가 다시 돌아왔을 때 호출됨
         super.onActivityResult(requestCode, resultCode, data);
         if(video_id == null && isHost.equals("true")){
             video_id = data.getStringExtra("s_videoId");
@@ -132,7 +132,7 @@ public class RoomActivity extends AppCompatActivity {
         userIntent.putExtra("userRoomCode", room_code);
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {       // 좌측 상단의 뒤로가기 버튼을 누를 때 퇴장할거냐는 확인 팝업 띄움
                 if(isHost.equals("true")){
                     // 호스트가 퇴장할 때
                     //System.out.println("호스트다아아아");
@@ -178,7 +178,7 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
-        share_icon.setOnClickListener(new View.OnClickListener(){
+        share_icon.setOnClickListener(new View.OnClickListener(){   // 공유 아이콘을 누르면 공유 가능
 
             @Override
             public void onClick(View view) {
@@ -209,13 +209,13 @@ public class RoomActivity extends AppCompatActivity {
 
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {     // 유튜브 영상을 띄움
                 //String videoId = video_id;
                 youTubePlayer.loadVideo("wgbr7exUnzE", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
             @Override
-            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {
+            public void onStateChange(YouTubePlayer youTubePlayer, PlayerConstants.PlayerState state) {     // 영상이 정지/재생/버퍼링 등 상태변화를 감지
                 super.onStateChange(youTubePlayer, state);
                 youTubePlayer.addListener(tracker);
                 //String videoId = tracker.getVideoId();
@@ -241,7 +241,7 @@ public class RoomActivity extends AppCompatActivity {
 
 
             @Override
-            public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {
+            public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {    // 영상의 현재 timestamp를 감지
                 super.onCurrentSecond(youTubePlayer, second);
                 youTubePlayer.addListener(tracker);
                 //String videoId = tracker.getVideoId();
@@ -309,7 +309,7 @@ public class RoomActivity extends AppCompatActivity {
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(TabLayout.Tab tab) {      // Chatting, users, playlist 탭 중에 하나를 선택하면 선택한 탭에 맞는 fragment를 띄워줌
                 int position = tab.getPosition();
 
                 Fragment selected = null;
@@ -354,7 +354,7 @@ public class RoomActivity extends AppCompatActivity {
         return new SimpleDateFormat("a hh:mm").format(new Date(currentMiliis));
     }
 
-    private void postUser() {
+    private void postUser() {       // 사용자 정보를 서버에 전달
         String url = "http://3.37.36.38:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
@@ -379,14 +379,14 @@ public class RoomActivity extends AppCompatActivity {
         requestQueue.add(jsonObjReq);
     }
 
-    private Uri getSharingDeepLink() {
+    private Uri getSharingDeepLink() {  // 딥링크 생성
         // get room code to share
         String roomCode = room_code;
         // https://andkjyk.page.link/wetube/share?code=3fa81c
         return Uri.parse("https://andkjyk.page.link/wetube/" + SEGMENT_SHARING + "?" + KEY_CODE + "=" + roomCode);
     }
 
-    private void onDynamicLinkClick() {
+    private void onDynamicLinkClick() { //동적링크를 눌렀을 때
         FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setLink(getSharingDeepLink())
                 .setDomainUriPrefix("//andkjyk.page.link")
@@ -415,7 +415,7 @@ public class RoomActivity extends AppCompatActivity {
                 });
     }
 
-    private void handleDeepLink() {
+    private void handleDeepLink() {     // 딥링크를 처리
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -523,7 +523,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 
-    private void postDelete() {
+    private void postDelete() {     // 사용자가 퇴장할 때 삭제된 사용자 정보를 서버에 전달
         String url = "http://3.37.36.38:3000/delete";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();

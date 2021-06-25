@@ -50,7 +50,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v) {       // 방 목록에서 원하는 방을 선택하면, 닉네임을 입력하라는 팝업이 뜨도록 함. 확인을 누르면 RoomActivity로 이동해서 방에 입장.
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         //Snackbar.make(v, pos+"번째 방 선택", Snackbar.LENGTH_SHORT).show();
@@ -104,7 +104,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                             }
 
                             @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {   // 텍스트 입력을 감지해서 닉네임 길이에 따라 버튼 활성화/비활성화
                                 Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
                                 //System.out.println("닉네임 길이: "+et.getText().length());
                                 if(et.getText().length() >= 2 && et.getText().length() <= 8){
