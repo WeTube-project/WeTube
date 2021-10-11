@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     }
 
     private void getMediaData(){    // 재생목록 데이터를 서버에서 가져옴
-        String media_url = "http://3.37.36.38:3000/media";
+        String media_url = "http://15.164.226.229:3000/media";
 
         //requestQueue.start();
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     }
 
     private void getData(){     // 방 목록 데이터를 서버에서 가져옴
-        String url = "http://3.37.36.38:3000/room";
+        String url = "http://15.164.226.229:3000/room";
         
         JsonObjectRequest jsonObjReq2 = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {

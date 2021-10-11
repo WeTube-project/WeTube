@@ -189,7 +189,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         // socket.io 서버 연결
         try {
-            mSocket = IO.socket("http://3.37.36.38:3000/");
+            mSocket = IO.socket("http://15.164.226.229:3000/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -355,7 +355,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
     }
 
     private void postUser() {       // 사용자 정보를 서버에 전달
-        String url = "http://3.37.36.38:3000/user";
+        String url = "http://15.164.226.229:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
 
@@ -524,7 +524,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
 
     private void postDelete() {     // 사용자가 퇴장할 때 삭제된 사용자 정보를 서버에 전달
-        String url = "http://3.37.36.38:3000/delete";
+        String url = "http://15.164.226.229:3000/delete";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
 

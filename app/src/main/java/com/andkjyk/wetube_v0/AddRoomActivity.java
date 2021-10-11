@@ -43,7 +43,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     String room_code, room_title, host_name;
 
     private void postRoom() {   // 개설된 방의 정보를 서버에 보냄
-        String url = "http://3.37.36.38:3000/room";
+        String url = "http://15.164.226.229:3000/room";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
 

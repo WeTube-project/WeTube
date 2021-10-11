@@ -219,7 +219,7 @@ public class AddPlaylistActivity extends AppCompatActivity {    // 재생목록�
     }
 
     private void postMedia(String roomCode, String videoTitle, String publisher, String thumbnailUrl, String videoId) {
-        String url = "http://3.37.36.38:3000/media";
+        String url = "http://15.164.226.229:3000/media";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
 

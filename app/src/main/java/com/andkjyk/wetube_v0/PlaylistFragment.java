@@ -108,7 +108,7 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
 
     private void getData(){     // 재생 목록 데이터를 서버에서 가져옴
         //System.out.println("getData() 호출됨");
-        String media_url = "http://3.37.36.38:3000/media";
+        String media_url = "http://15.164.226.229:3000/media";
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, media_url, null,
                 response -> {
@@ -186,7 +186,7 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
     }
 
     private void postMedia(String roomCode, String videoTitle, String publisher, String thumbnailUrl, String videoId) { // 재생목록에 추가된 영상에 대한 데이터를 서버에 보냄
-        String url = "http://3.37.36.38:3000/media";
+        String url = "http://15.164.226.229:3000/media";
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         requestQueue.start();
 

@@ -97,7 +97,7 @@ public class UsersFragment extends Fragment {   // 사용자 목록 fragment
     }
 
     private void getData(){     // 사용자 목록 데이터를 서버에서 받아옴
-        String url = "http://3.37.36.38:3000/user";
+        String url = "http://15.164.226.229:3000/user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
