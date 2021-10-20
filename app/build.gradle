@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.andkjyk.wetube_v0"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -67,4 +67,7 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-dynamic-links'
     implementation 'com.google.firebase:firebase-analytics'
+
+    //Jitsi Meet
+    implementation ('org.jitsi.react:jitsi-meet-sdk:3.+') { transitive = true }
 }
