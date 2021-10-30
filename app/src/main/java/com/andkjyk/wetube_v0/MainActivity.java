@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
                 recyclerView.setAdapter(adapter);
                 requestQueue = Volley.newRequestQueue(MainActivity.this);
 
-                getData();
+                getData();// getmedia도 있음
                 refreshLayout.setRefreshing(false);
             }
         });
@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
         recyclerView.setAdapter(adapter);
 
         requestQueue = Volley.newRequestQueue(this);
-        getData();
+        getMediaData();
+        //getData();
         //getRoomData();
     }
 
@@ -178,13 +179,13 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
                     try {
                         System.out.println("첫번째 시작함");
                         room_size = response.getInt("roomSize");
-                        JSONArray roomarr = response.getJSONArray("room");
+                        JSONArray roomarr = response.getJSONArray("room");//서버의 room을 roomarr에 넣음
 
                         //서버에서 받은 데이터를 list에 담는 부분
                         System.out.println("room_size: "+room_size);
                         listRoomCode.clear();
                         listTitle.clear();
-                        listHeadcount.clear();
+                        listHeadcount.clear();//인원
                         listHostName.clear();
                         listThumbnail.clear();
                         listRoomCode.clear();
@@ -192,9 +193,9 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
                         listVideoId.clear();
                         m_listRoomCode.clear();
                         for(int i = 0; i < room_size; i++){
-                            JSONObject jsonObject = roomarr.getJSONObject(i);
+                            JSONObject jsonObject = roomarr.getJSONObject(i);//jsonobject에 roomarr 순서대로 넣음
 
-                            RoomItem room = new RoomItem(
+                            RoomItem room = new RoomItem(// room에 정보들 다넣음
                                     jsonObject.getString("roomTitle"),
                                     jsonObject.getString("hostName"),
                                     jsonObject.getString("roomCode")
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
 
                             System.out.println("중간점검");
 
-                            //디폴트 설정 (재생목록에 아무것도 추가 안했을 때 이 값 유지, 아니면 getMediaData에서 변경됨)
+                            //디폴트 설정 (재생목록에 아무것도 추가 안했을 때 이 값 유지, 아니면 getMediaData에서 변경됨) 방이 만들어지면 무조건 이게 재셍됨
                             String title = "[놀면 뭐하니?] 유야호가 쏘아 올린 왕의 귀환\uD83E\uDD34 한 클립에 모아보기ㅣ#SG워너비\u200B #유야호\u200B #엠뚜루마뚜루\u200B MBC210417방송";
                             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     private class FABClickListener implements View.OnClickListener {    // 우측 하단의 + 버튼을 누르면 AddRoomActivity로 이동해서 방 개설 가능
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddVideoActivity.class);
             startActivity(intent);
         }
     }

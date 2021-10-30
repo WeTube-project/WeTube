@@ -19,9 +19,9 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/left_icon"
-        android:text="재생 목록에 추가하기"
-        android:textStyle="bold"
+        android:text="공유 시청 동영상 선택"
         android:textColor="@color/colorPrimary"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

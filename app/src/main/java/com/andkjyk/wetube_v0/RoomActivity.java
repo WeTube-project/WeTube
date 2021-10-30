@@ -113,6 +113,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
             room_title = intent.getStringExtra("roomTitle");
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
+            video_id = intent.getStringExtra("videoId");
             user_name = host_name;
             isHost = "true";
         } else if(SenderActivity.equals("Main")){
@@ -211,7 +212,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {     // 유튜브 영상을 띄움
                 //String videoId = video_id;
-                youTubePlayer.loadVideo("wgbr7exUnzE", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
+                youTubePlayer.loadVideo(video_id, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
             @Override
