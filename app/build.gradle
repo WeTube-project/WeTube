@@ -68,3 +68,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links'
     implementation 'com.google.firebase:firebase-analytics'
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '0.9'
+}
+
+task prepareKotlinBuildScriptModel {
+
+}
