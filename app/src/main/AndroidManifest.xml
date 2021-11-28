@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.andkjyk.wetube_v0">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo_whiteback"
@@ -10,17 +11,17 @@
         android:roundIcon="@mipmap/ic_logo_whiteback_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light"
-        android:usesCleartextTraffic="true"
-        >
-        <activity android:name=".AddRoomActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".AddRoomActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AddPlaylistActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RoomActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -32,15 +33,18 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="andkjyk.page.link/wetube"
                     android:scheme="http" />

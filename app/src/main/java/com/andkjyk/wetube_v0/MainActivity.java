@@ -30,6 +30,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 public class MainActivity extends AppCompatActivity {   //방 목록 액티비티
 
     RequestQueue requestQueue;
@@ -48,11 +56,35 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     ArrayList<String> m_listRoomCode = new ArrayList<>();
     ArrayList<String> listHostName = new ArrayList<>();
 
+    // oauth login
+    GoogleSignInClient mGoogleSignInClient;
+    private static int RC_SIGN_IN = 100;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // oauth login
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        SignInButton signInButton = findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             signIn();
+            };
+        });
+        // oauth login end
+
+
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new FABClickListener());
 
@@ -241,4 +273,41 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
             startActivity(intent);
         }
     }
+
+    // oauth login methods
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+            if (acct != null) {
+              String personName = acct.getDisplayName();
+              String personGivenName = acct.getGivenName();
+              String personFamilyName = acct.getFamilyName();
+              String personEmail = acct.getEmail();
+              String personId = acct.getId();
+
+              System.out.println("===로그인===");
+              System.out.println(personName);
+            }
+        } catch (ApiException e) {
+            System.out.println("오류");
+            System.out.println(e.toString());
+        }
+    }
+    // oauth login methods end
 }
