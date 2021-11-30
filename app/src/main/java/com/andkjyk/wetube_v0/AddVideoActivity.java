@@ -66,7 +66,7 @@ public class AddVideoActivity extends AppCompatActivity {    // 재생목록에 
             @Override
             public void onClick(View v)     // 좌측 상단의 뒤로가기 아이콘을 누르면 RoomActivity로 이동
             {
-                Intent intent = new Intent(AddVideoActivity.this, RoomActivity.class);
+                Intent intent = new Intent(AddVideoActivity.this, MainActivity.class);
                 intent.putExtra("ActivityName", "AddPlaylist"); // RoomActivity에서 ActivityName으로 분기처리 했기 때문에 필요.. 없으면 에러
                 startActivity(intent);
             }
