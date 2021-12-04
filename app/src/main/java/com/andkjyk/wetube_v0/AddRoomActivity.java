@@ -41,7 +41,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     private EditText code, room_title_input, host_name_input;
     boolean isCodeEntered, isTitleEntered, isHostNameEntered;
     String room_code, room_title, host_name;
-
+    String email = "";
     private void postRoom() {   // 개설된 방의 정보를 서버에 보냄
         String url = "http://15.164.226.229:3000/room";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -50,6 +50,9 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
         JSONObject params = new JSONObject();
 
         try {
+            if (email != "") {
+                params.put("email", email);
+            }
             params.put("roomTitle", room_title);
             params.put("hostName", host_name);
             params.put("roomCode", room_code);
@@ -70,6 +73,10 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent roomIntent = getIntent();
+        email = roomIntent.getStringExtra("email");
+
         setContentView(R.layout.activity_add_room);
 
         left_icon = findViewById(R.id.left_icon);

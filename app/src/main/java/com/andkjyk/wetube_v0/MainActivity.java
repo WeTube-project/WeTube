@@ -29,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +39,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {   //방 목록 액티비티
 
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     ArrayList<String> listRoomCode = new ArrayList<>();
     ArrayList<String> m_listRoomCode = new ArrayList<>();
     ArrayList<String> listHostName = new ArrayList<>();
+    String email = "";
 
     // oauth login
     GoogleSignInClient mGoogleSignInClient;
@@ -269,8 +273,35 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     private class FABClickListener implements View.OnClickListener {    // 우측 하단의 + 버튼을 누르면 AddRoomActivity로 이동해서 방 개설 가능
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
-            startActivity(intent);
+            if (email != "") {
+                Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setTitle("로그인").setMessage("로그인이 필요한 서비스입니다 로그인 하시겠습니까?");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        signIn();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        Toast.makeText(getApplicationContext(), "Cancel Click", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+
+                alertDialog.show();
+            }
         }
     }
 
@@ -299,15 +330,48 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               String personGivenName = acct.getGivenName();
               String personFamilyName = acct.getFamilyName();
               String personEmail = acct.getEmail();
+              email = personEmail;
               String personId = acct.getId();
+              Uri personPhoto = acct.getPhotoUrl();
 
               System.out.println("===로그인===");
               System.out.println(personName);
+              System.out.println(personGivenName);
+              System.out.println(personFamilyName);
+              System.out.println(personEmail);
+              System.out.println(personId);
+              System.out.println(personPhoto);
+              postUser(personEmail);
             }
         } catch (ApiException e) {
             System.out.println("오류");
             System.out.println(e.toString());
         }
+    }
+
+    private void postUser(String email) {   // 개설된 방의 정보를 서버에 보냄
+        System.out.println("postUser!!!");
+
+        String url = "http://15.164.226.229:3000/login";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("email", email);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                        response -> {
+                            //Toast.makeText(getApplicationContext(), "email msg from server : " + response, Toast.LENGTH_LONG).show();
+                        }, error -> {
+                            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
     }
     // oauth login methods end
 }
