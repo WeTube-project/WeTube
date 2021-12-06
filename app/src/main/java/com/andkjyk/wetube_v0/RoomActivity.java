@@ -35,6 +35,7 @@ import com.andkjyk.wetube_v0.Model.ChatItem;
 import com.andkjyk.wetube_v0.Model.ChatType;
 import com.andkjyk.wetube_v0.Model.MessageData;
 import com.andkjyk.wetube_v0.Model.PauseData;
+import com.andkjyk.wetube_v0.Model.PlaylistItem;
 import com.andkjyk.wetube_v0.Model.RoomData;
 import com.andkjyk.wetube_v0.Model.RoomItem;
 import com.andkjyk.wetube_v0.Model.SyncData;
@@ -48,6 +49,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.api.client.json.Json;
 import com.google.api.client.json.JsonString;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
@@ -81,7 +83,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
     private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
-    String room_title, room_code, host_name, user_name, isHost, video_id, jsonVideoId;
+    String room_title, room_code, host_name, user_name, isHost, video_id, nextVideoId;
     float _guestTimestamp;
     boolean isVideoSet = false;
 
@@ -233,20 +235,19 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                     }
                     // -----------
                     else if(state.equals(PlayerConstants.PlayerState.ENDED)){
-                        postVideoDelete();
-                       getVideoData(); // 애가 문제임
-
-                        video_id = jsonVideoId;
-                        youTubePlayer.loadVideo(video_id, 0);
+                        System.out.println("end video");
+                       postVideoDelete();
+                      getData();
+                       youTubePlayer.loadVideo(video_id, 0);
                     }
 
                     mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
 
-                    if(isVideoSet){
+                   /* if(isVideoSet){
                         System.out.println("확인2");
                         youTubePlayer.loadVideo(video_id, 0);
                         isVideoSet = false;
-                    }
+                    }*/
                 }
                 // --------------
                 System.out.println("확인1");
@@ -274,7 +275,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                     if(_guestTimestamp % 1 == 0){
                         mSocket.on("sync", args -> {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
-                            String hostVideoId = data.getVideoId();
+                            String hostVideoId = data.getVideoId();// 여기가 문제일 가능선이 다분
                             float hostTimestamp = data.getHostTimestamp();
                             System.out.println("hostVideoId: "+hostVideoId);
                             if(!video_id.equals(hostVideoId) && hostVideoId != null){   // if(!videoId.equals(hostVideoId))인데 둘다 null을 return하는 문제 있어서 해결 필요, 일단 false로 처리
@@ -386,6 +387,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
+
                     //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
                 }, error -> {
             //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
@@ -563,8 +565,10 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         requestQueue.add(jsonObjReq);
     }
 
-    private void postVideoDelete() {     // 방장의 영상이 정지하면 호출
+    private void postVideoDelete() {// 방장의 영상이 정지하면 호출
+        System.out.println("postVideo 호");
         String url = "http://15.164.226.229:3000/videoDelete";
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.start();
 
@@ -580,14 +584,57 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
                 response -> {
-                    //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
-                }, error -> {
+
+                    }, error -> {
             //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
         });
 
         requestQueue.add(jsonObjReq);
     }
 
+    private void getData(){     // 재생 목록 데이터를 서버에서 가져옴
+        System.out.println("getData() 호출됨");
+        String media_url = "http://15.164.226.229:3000/media";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjReq2 = new JsonObjectRequest(Request.Method.GET, media_url, null,
+                response -> {
+                    try {
+                        int roominfo_size = response.getInt("roominfoSize");
+                        JSONArray roominfoarr = response.getJSONArray("roominfo");
+
+                        for(int i = 0; i < roominfo_size; i++){
+                            String rcv_roomCode = roominfoarr.getJSONObject(i).getString("roomCode");
+                            if(rcv_roomCode.equals(room_code)) {
+                                JSONObject jsonObject = roominfoarr.getJSONObject(i);
+                                String title = jsonObject.getString("title");
+                                room_title = title;
+                                video_id = jsonObject.getString("videoId");
+
+                                System.out.println(room_code);
+                                System.out.println(rcv_roomCode);
+                              System.out.println(jsonObject.getString("videoId"));
+                                System.out.println(video_id);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    title = String.valueOf(Html.fromHtml(title, Html.FROM_HTML_MODE_COMPACT));
+                                } else {
+                                    title = String.valueOf(Html.fromHtml(title));
+                                }
+
+                                break;
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //  Toast.makeText(getActivity().getApplicationContext(), "msg from server => title: " , Toast.LENGTH_LONG).show();
+                }, error -> {
+           // Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq2);
+    }
+/*
     private void getVideoData(){     // 사용자 목록 데이터를 서버에서 받아옴
         String media_url = "http://15.164.226.229:3000/videoDelete";
 
@@ -595,11 +642,14 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         JsonObjectRequest jsonObjReq2 = new JsonObjectRequest(Request.Method.GET, media_url, null,
                 response -> {
                     try {
-                        System.out.println("두번째 시작함");
-                         jsonVideoId= response.getString("roominfoSize");
+                        System.out.println("getVideoData");
+                        JSONArray roomarr = response.getJSONArray("nextVideoId");//서버의 room을 roomarr에 넣음
 
+                        JSONObject jsonObject = roomarr.getJSONObject(0);//jsonobject에 roomarr 순서대로 넣음
 
-                    } catch (JSONException e) {
+                        nextVideoId =  jsonObject.getString("Db_videoId");
+                        System.out.print("nextVideoId :"+nextVideoId);
+                    } catch(JSONException e){
                         e.printStackTrace();
                     }
 
@@ -611,7 +661,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         //여기까지
 
-    }
+    }*/
     /*
     @Override
     protected void onStop() {
