@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               String personGivenName = acct.getGivenName();
               String personFamilyName = acct.getFamilyName();
               String personEmail = acct.getEmail();
-              email = personEmail;
+              //email = personEmail;
               String personId = acct.getId();
               Uri personPhoto = acct.getPhotoUrl();
 
@@ -339,9 +339,13 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               System.out.println(personGivenName);
               System.out.println(personFamilyName);
               System.out.println(personEmail);
+              System.out.println(personEmail.indexOf('@'));
+              int endOfEmailIndex = personEmail.indexOf('@');
+              email = personEmail.substring(0, endOfEmailIndex);
+              System.out.println(email);
               System.out.println(personId);
               System.out.println(personPhoto);
-              postUser(personEmail);
+              postUser(email);
             }
         } catch (ApiException e) {
             System.out.println("오류");
