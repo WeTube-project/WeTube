@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddPlaylistActivity">
+
+    <include layout="@layout/bar_add_playlist" android:id="@+id/add_playlist_bar"/>
+
+    <ImageView
+        android:id="@+id/add_playlist_horizon_line"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/horizon_line"></ImageView>
+
+    <SearchView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/add_playlist_horizon_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_margin="5dp"
+        android:visibility="visible"
+        android:queryHint="키워드로 영상을 검색해보세요"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_search_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="5dp"
+        android:clipToPadding="false"
+        android:paddingBottom="150dp">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

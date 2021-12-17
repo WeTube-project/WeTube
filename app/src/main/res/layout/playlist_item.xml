@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/main_item"
+    android:background="@drawable/item_radius"
+    android:elevation="2dp"
+    android:layout_margin="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/pl_thumbnail"
+        android:layout_width="160dp"
+        android:layout_height="89dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="#7E7E7E"/>
+
+    <LinearLayout
+        android:id="@+id/layout_pl_video_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="170dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@id/pl_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/pl_thumbnail">
+        <TextView
+            android:id="@+id/tv_pl_video_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="빈센조 슬기로운 의사생활 어쩌구 저쩌구 dkdkdk"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="170dp"
+        android:layout_marginVertical="5dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_pl_video_name"
+        app:layout_constraintStart_toEndOf="@id/pl_thumbnail">
+        <TextView
+            android:id="@+id/tv_pl_publisher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="채널 십오야rkrkalㅁㄴ거마ㅓ민ㅇ라ㅓㄴ이ㅏㄹ머"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

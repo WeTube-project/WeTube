@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="57dp"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/left_icon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="5dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_left" />
+
+    <TextView
+        android:id="@+id/add_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/left_icon"
+        android:text="ROOM 개설하기"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/complete_btn"
+        android:enabled="false"
+        android:clickable="false"
+        android:layout_width="65dp"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="완료"
+        android:gravity="center"
+        android:background="@null"
+        android:textColor="@color/dark_gray"
+        android:textSize="18sp"/>
+
+
+</RelativeLayout>

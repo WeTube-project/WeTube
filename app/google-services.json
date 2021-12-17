@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "238705624356",
+    "project_id": "wetube-f6441",
+    "storage_bucket": "wetube-f6441.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238705624356:android:12ccb6af32259f1bb49fb1",
+        "android_client_info": {
+          "package_name": "com.andkjyk.wetube_v0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238705624356-htrgfo9n0230297pnvjga34po332jmj0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andkjyk.wetube_v0",
+            "certificate_hash": "19f8a0af2a1d16cea1598a5060d203e412911b4a"
+          }
+        },
+        {
+          "client_id": "238705624356-4hnltgh96vd85icop8aeb2j0s2tmoncd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDys19j6pItsB2KSVX6mI4MjTtD5hfyq_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238705624356-4hnltgh96vd85icop8aeb2j0s2tmoncd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="4dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="60dp"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/rcvName"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:text="팥드러슈"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rcvContent"
+        android:layout_below="@+id/rcvName"
+        android:layout_alignLeft="@+id/rcvName"
+        android:background="@drawable/received_message"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="10dp"
+        android:elevation="2dp"
+        android:textSize="15dp"
+        android:text="안녕 반가워~~~"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rcvTime"
+        android:layout_toRightOf="@id/rcvContent"
+        android:layout_alignBottom="@id/rcvContent"
+        android:layout_marginLeft="5dp"
+        android:text="오후 10:13"/>
+</RelativeLayout>
