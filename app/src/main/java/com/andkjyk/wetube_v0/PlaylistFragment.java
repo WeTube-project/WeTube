@@ -201,6 +201,8 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
          */
 
         try {
+            //Todo: login정보를 보내기
+            //params.put("email", email);
             params.put("roomCode", roomCode);
             params.put("videoTitle", videoTitle);
             params.put("publisher", publisher);

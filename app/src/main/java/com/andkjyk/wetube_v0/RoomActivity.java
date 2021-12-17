@@ -362,6 +362,8 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         JSONObject params = new JSONObject();
 
         try {
+            //Todo: login정보를 보내기
+            //params.put("email", email);
             params.put("userName", user_name);
             params.put("roomCode", room_code);
             params.put("isHost", isHost);
@@ -531,6 +533,8 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         JSONObject params = new JSONObject();
 
         try {
+            //Todo: login정보를 보내기
+            //params.put("email", email);
             params.put("userName", user_name);
             params.put("roomCode", room_code);
             params.put("isHost", isHost);
