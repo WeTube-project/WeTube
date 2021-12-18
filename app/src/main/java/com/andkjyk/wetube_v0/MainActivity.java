@@ -88,8 +88,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
              signIn();
             };
         });
-        // oauth login end
-
+        // oauth login ended
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new FABClickListener());
@@ -240,7 +239,6 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
 
                             listTitle.add(room.getRoomTitle());
                             listHeadcount.add(1+"");
-
                             System.out.println("중간점검");
 
                             //디폴트 설정 (재생목록에 아무것도 추가 안했을 때 이 값 유지, 아니면 getMediaData에서 변경됨)

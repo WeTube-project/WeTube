@@ -41,7 +41,7 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
     private int ADDPLAYLIST_REQUEST_CODE = 208;
     String videoId, publisher, thumbnailUrl, title;
     private ArrayList<PlaylistItem> plItemList = new ArrayList<>();
-    String roomCode;
+    String roomCode, email;
 
     public PlaylistFragment() {
         // Required empty public constructor
@@ -77,6 +77,7 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
 
         Bundle bundle = getArguments();
         roomCode = bundle.getString("roomCode");
+        email = bundle.getString("email");
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.playlist_fab);
         fab.setOnClickListener(new View.OnClickListener() {
