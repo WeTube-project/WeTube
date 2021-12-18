@@ -1,6 +1,8 @@
 package com.andkjyk.wetube_v0;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -12,8 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.andkjyk.wetube_v0.Adapter.AddPlaylistAdapter;
-import com.andkjyk.wetube_v0.Adapter.AddRoomAdapter;
+import com.andkjyk.wetube_v0.Adapter.AddVideoAdapter;
 import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,13 +42,15 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AddVideoActivity extends AppCompatActivity {    // 재생목록에 영상을 추가하는 액티비티
-
+    public static Context mContext;
     public static final String KEY = "AIzaSyCE9vus0pcVAAdXOiMhdlmQnOBqgqONcHQ";
 
-    private AddRoomAdapter adapter;
+    private AddVideoAdapter adapter;
     private ImageView left_icon;
     private SearchView searchView;
     private String roomCode;
+    public String userName;
+    public Uri profileImage;
 
     private ArrayList<SearchedVideoItem> searchedItemList = new ArrayList<>();
 
@@ -55,12 +58,14 @@ public class AddVideoActivity extends AppCompatActivity {    // 재생목록에 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_video);
+        mContext = this;
 
         left_icon = findViewById(R.id.left_icon);
         searchView = findViewById(R.id.searchView);
 
-
-
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
+        profileImage = intent.getParcelableExtra("profileImage");
 
         left_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +82,7 @@ public class AddVideoActivity extends AppCompatActivity {    // 재생목록에 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
-        adapter = new AddRoomAdapter(this, searchedItemList);
+        adapter = new AddVideoAdapter(this, searchedItemList);
         recyclerView.setAdapter(adapter);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

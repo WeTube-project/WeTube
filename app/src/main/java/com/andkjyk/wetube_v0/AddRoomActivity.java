@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,7 +64,6 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     private String roomCode;
 
     private ArrayList<SearchedVideoItem> searchedItemList = new ArrayList<>();
-    private Intent intent;
     private static final int ADDROOM_REQUEST_CODE = 322;
     private ImageView left_icon;
     private Button random_btn;
@@ -73,7 +73,9 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     String room_code, room_title, host_name;
     //String email = "";
     String userName = "";
+    public Uri profileImage;
     String videoId, publisher, thumbnailUrl, title;
+
     private void postRoom() {   // 개설된 방의 정보를 서버에 보냄
         String url = "http://15.164.226.229:3000/room";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -106,9 +108,6 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent roomIntent = getIntent();
-        userName = roomIntent.getStringExtra("userName");
-
         setContentView(R.layout.activity_add_room);
 
         left_icon = findViewById(R.id.left_icon);
@@ -117,9 +116,14 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
         code = findViewById(R.id.random_code);
         room_title_input = findViewById(R.id.room_title_input);
         host_name_input = findViewById(R.id.host_name_input);
-        host_name_input.setText(userName);
         searchView = findViewById(R.id.searchView);
-        intent = getIntent();
+
+        Intent intent = getIntent();
+        userName = intent.getStringExtra("userName");
+        host_name_input.setText(userName);
+        profileImage = intent.getParcelableExtra("profileImage");
+        isHostNameEntered = true;   // text가 이미 입력돼있으므로 그냥 true로 전환시킴
+
         videoId = intent.getStringExtra("s_videoId");
         publisher = intent.getStringExtra("s_publisher");
         thumbnailUrl = intent.getStringExtra("s_thumbnailUrl");
@@ -146,6 +150,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
                 intent.putExtra("hostName", host_name);
                 intent.putExtra("videoId",videoId);
                 intent.putExtra("ActivityName", "AddRoom");
+                intent.putExtra("profileImage", profileImage);
                 //intent.putExtra("email", email);
 
                 postRoom();

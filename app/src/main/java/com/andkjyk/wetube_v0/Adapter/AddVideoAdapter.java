@@ -1,11 +1,11 @@
 package com.andkjyk.wetube_v0.Adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,30 +14,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.andkjyk.wetube_v0.AddPlaylistActivity;
 import com.andkjyk.wetube_v0.AddRoomActivity;
 import com.andkjyk.wetube_v0.AddVideoActivity;
-import com.andkjyk.wetube_v0.Model.PlaylistItem;
+import com.andkjyk.wetube_v0.MainActivity;
 import com.andkjyk.wetube_v0.Model.SearchedVideoItem;
 import com.andkjyk.wetube_v0.R;
-import com.andkjyk.wetube_v0.RoomActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
-public class AddRoomAdapter extends RecyclerView.Adapter<com.andkjyk.wetube_v0.Adapter.AddRoomAdapter.ViewHolder>{
+public class AddVideoAdapter extends RecyclerView.Adapter<AddVideoAdapter.ViewHolder>{
 
     private ArrayList<SearchedVideoItem> searchedList = null;
     Context context;
+    String userName;
+    Uri profileImage;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -83,6 +78,8 @@ public class AddRoomAdapter extends RecyclerView.Adapter<com.andkjyk.wetube_v0.A
                                 intent.putExtra("s_publisher", publisher);
                                 intent.putExtra("s_thumbnailUrl", thumbnailUrl);
                                 intent.putExtra("s_title", finalSTitle);
+                                intent.putExtra("userName", userName);
+                                intent.putExtra("profileImage", profileImage);
                                 //((AddRoomActivity) context).setResult(Activity.RESULT_OK, intent);
                                 ((AddVideoActivity) context).startActivity(intent);
                             }
@@ -95,7 +92,7 @@ public class AddRoomAdapter extends RecyclerView.Adapter<com.andkjyk.wetube_v0.A
         }
     }
 
-    public AddRoomAdapter(Context context, ArrayList<SearchedVideoItem> searchedList) {
+    public AddVideoAdapter(Context context, ArrayList<SearchedVideoItem> searchedList) {
         this.searchedList = searchedList;
         this.context = context;
     }
@@ -107,9 +104,9 @@ public class AddRoomAdapter extends RecyclerView.Adapter<com.andkjyk.wetube_v0.A
 
     @NonNull
     @Override
-    public com.andkjyk.wetube_v0.Adapter.AddRoomAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AddVideoAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_item, parent, false);
-        com.andkjyk.wetube_v0.Adapter.AddRoomAdapter.ViewHolder vh = new com.andkjyk.wetube_v0.Adapter.AddRoomAdapter.ViewHolder(view);
+        AddVideoAdapter.ViewHolder vh = new AddVideoAdapter.ViewHolder(view);
         return vh;
     }
 
@@ -122,13 +119,16 @@ public class AddRoomAdapter extends RecyclerView.Adapter<com.andkjyk.wetube_v0.A
     }
 
     @Override
-    public void onBindViewHolder(@NonNull com.andkjyk.wetube_v0.Adapter.AddRoomAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AddVideoAdapter.ViewHolder holder, int position) {
         SearchedVideoItem plItem = searchedList.get(position);
 
         holder.tv_pl_video_name.setText(plItem.getTitle());
         holder.tv_pl_publisher.setText(plItem.getPublisher());
 
         String url = plItem.getThumbnailURL();
+
+        userName = ((AddVideoActivity) AddVideoActivity.mContext).userName;
+        profileImage = ((AddVideoActivity) AddVideoActivity.mContext).profileImage;
 
         int radius = convertDpToPixel(5, context);
         Glide.with(holder.itemView.getContext()).load(url).transform(new CenterCrop(), new RoundedCorners(radius)).into(holder.pl_thumbnail);

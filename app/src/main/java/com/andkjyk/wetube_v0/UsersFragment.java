@@ -1,6 +1,7 @@
 package com.andkjyk.wetube_v0;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -41,6 +42,7 @@ public class UsersFragment extends Fragment {   // 사용자 목록 fragment
     private ArrayList<String> user = new ArrayList<>();
     private String isHost;
     private int user_size = 0;
+    private Uri profileImage;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -64,6 +66,8 @@ public class UsersFragment extends Fragment {   // 사용자 목록 fragment
 
         isHost = bundle.getString("isHost");
         room_code = bundle.getString("roomCode"); // 번들에서 roomCode도 받아옴
+        profileImage = bundle.getParcelable("profileImage");
+
         tv_my_name = view.findViewById(R.id.tv_my_name);
 
         if(isHost == "true"){

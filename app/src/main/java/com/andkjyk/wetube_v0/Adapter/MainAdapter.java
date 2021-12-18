@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -126,6 +127,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 //                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                         //String userName = et.getText().toString();
                         String userName = ((MainActivity) MainActivity.mContext).userName;
+                        Uri profileImage = ((MainActivity) MainActivity.mContext).profileImage;
                         Intent intent = new Intent(v.getContext(), RoomActivity.class);
                         System.out.println("MainAdapter - 호스트이름: "+mainList.get(pos).getHostName());
                         intent.putExtra("userName", userName);
@@ -135,6 +137,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                         System.out.println("방코드: "+mainList.get(pos).getRoomCode());
                         intent.putExtra("roomCode", mainList.get(pos).getRoomCode());    // 몇번째 방인지.. 필요할지는 모르겠음 roomCode를 알아야할것같은데..
                         intent.putExtra("ActivityName", "Main");
+                        intent.putExtra("profileImage", profileImage);
                         ((MainActivity) context).startActivity(intent);
                     }
                 }

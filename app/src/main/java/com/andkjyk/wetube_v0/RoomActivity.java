@@ -82,6 +82,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
     private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
     String room_title, room_code, host_name, user_name, isHost, video_id, jsonVideoId;
+    public Uri profileImage;
     float _guestTimestamp;
     boolean isVideoSet = false;
 
@@ -113,6 +114,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         Intent intent = getIntent();
         String SenderActivity = intent.getStringExtra("ActivityName");
+        profileImage = intent.getParcelableExtra("profileImage");
         //String email = intent.getStringExtra("email");
         if(SenderActivity.equals("AddRoom")){
             // 재생목록에 추가하는 팝업 띄우고, 확인 누르면 AddPlaylistActivity로 인텐트 보냄
@@ -346,6 +348,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                 //bundle.putString("email", email);
                 bundle.putString("host_name", host_name);
                 bundle.putString("user_name", user_name);
+                bundle.putParcelable("profileImage", profileImage);
 //                if(isHost.equals("true")){
 //                    bundle.putString("host_name", host_name);
 //                }else{

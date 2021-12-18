@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     private MainAdapter adapter;
     private ArrayList<RoomItem> roomItemList = new ArrayList<>();
     String room_title, host_name, room_code;
+    public Uri profileImage;
     int room_size;
 
     ArrayList<String> listTitle = new ArrayList<>();
@@ -276,8 +277,9 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
         @Override
         public void onClick(View view) {
             if (userName != "") {
-                Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddVideoActivity.class);
                 intent.putExtra("userName", userName);
+                intent.putExtra("profileImage", profileImage);
                 startActivity(intent);
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -335,6 +337,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               //email = personEmail;
               String personId = acct.getId();
               Uri personPhoto = acct.getPhotoUrl();
+              profileImage = personPhoto;
 
               System.out.println("===로그인===");
               System.out.println(personName);
