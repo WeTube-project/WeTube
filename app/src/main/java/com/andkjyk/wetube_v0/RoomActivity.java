@@ -68,7 +68,7 @@ import io.socket.client.Socket;
 
 import static android.media.MediaPlayer.MetricsConstants.PLAYING;
 
-public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 보여지는 액티비티.
+public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 보여지는 액티비티..
 
     public Socket mSocket;
     private Gson gson = new Gson();
