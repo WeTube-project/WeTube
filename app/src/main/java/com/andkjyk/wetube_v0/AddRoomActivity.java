@@ -171,14 +171,10 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
 
         room_title_input.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable edit) {   // 방 제목 칸이 비어있는지 감지
@@ -191,14 +187,10 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
 
         code.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable edit) {       // 방 코드 칸이 비어있는지 감지
@@ -211,14 +203,10 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
 
         host_name_input.addTextChangedListener(new TextWatcher() {      // 호스트 이름 칸이 비어있는지 감지
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable edit) {

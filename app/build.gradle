@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.andkjyk.wetube_v0"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -68,6 +68,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+    //Jitsi Meet
+    implementation ('org.jitsi.react:jitsi-meet-sdk:3.+') { transitive = true }
 
     // circle imageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'

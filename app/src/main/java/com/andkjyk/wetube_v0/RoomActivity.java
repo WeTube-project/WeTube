@@ -43,6 +43,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.react.modules.core.PermissionListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -61,6 +62,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTube
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import org.json.JSONArray;
+import org.jitsi.meet.sdk.JitsiMeetActivityInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,7 +76,7 @@ import io.socket.client.Socket;
 
 import static android.media.MediaPlayer.MetricsConstants.PLAYING;
 
-public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 보여지는 액티비티..
+public class RoomActivity extends AppCompatActivity implements JitsiMeetActivityInterface {   // 방에 입장하면 보여지는 액티비티
     RequestQueue requestQueue;
     public Socket mSocket;
     private Gson gson = new Gson();
@@ -318,6 +320,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         });
 
         frag_chat = new ChatFragment();
+        frag_video_chat = new VideoChatFragment();
         frag_users = new UsersFragment();
         frag_playlist = new PlaylistFragment();
 
@@ -335,8 +338,10 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                 if (position == 0) {
                     selected = frag_chat;
                 } else if (position == 1) {
-                    selected = frag_users;
+                    selected = frag_video_chat;
                 } else if (position == 2) {
+                    selected = frag_users;
+                } else if (position == 3) {
                     selected = frag_playlist;
                 }
 
@@ -621,6 +626,11 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         requestQueue.add(jsonObjReq2);
 
         //여기까지
+
+    }
+
+    @Override
+    public void requestPermissions(String[] strings, int i, PermissionListener permissionListener) {
 
     }
     /*
