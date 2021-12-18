@@ -87,7 +87,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
     private static final int REQ_CODE_INVITE = 1000;
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   // AddPlaylistActivity로 이동했다가 다시 돌아왔을때 호출됨
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   // AddPlaylistActivity로 이동했다가 다시 돌아왔을 때 호출됨
         super.onActivityResult(requestCode, resultCode, data);
         if(video_id == null && isHost.equals("true")){
             video_id = data.getStringExtra("s_videoId");
