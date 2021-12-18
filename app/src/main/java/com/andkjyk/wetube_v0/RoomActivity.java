@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +36,9 @@ import com.andkjyk.wetube_v0.Model.ChatType;
 import com.andkjyk.wetube_v0.Model.MessageData;
 import com.andkjyk.wetube_v0.Model.PauseData;
 import com.andkjyk.wetube_v0.Model.RoomData;
+import com.andkjyk.wetube_v0.Model.RoomItem;
 import com.andkjyk.wetube_v0.Model.SyncData;
+import com.andkjyk.wetube_v0.Model.UserItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -45,6 +48,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.api.client.json.JsonString;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
@@ -56,11 +60,13 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.socket.client.IO;
@@ -69,13 +75,13 @@ import io.socket.client.Socket;
 import static android.media.MediaPlayer.MetricsConstants.PLAYING;
 
 public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 보여지는 액티비티..
-
+    RequestQueue requestQueue;
     public Socket mSocket;
     private Gson gson = new Gson();
 
     private ImageView left_icon, share_icon;
     Fragment frag_playlist, frag_users, frag_chat;
-    String room_title, room_code, host_name, user_name, isHost, video_id;
+    String room_title, room_code, host_name, user_name, isHost, video_id, jsonVideoId;
     float _guestTimestamp;
     boolean isVideoSet = false;
 
@@ -114,6 +120,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
             room_title = intent.getStringExtra("roomTitle");
             room_code = intent.getStringExtra("roomCode");
             host_name = intent.getStringExtra("hostName");
+            video_id = intent.getStringExtra("videoId");
             user_name = host_name;
             isHost = "true";
         } else if(SenderActivity.equals("Main")){
@@ -212,7 +219,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {     // 유튜브 영상을 띄움
                 //String videoId = video_id;
-                youTubePlayer.loadVideo("wgbr7exUnzE", 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
+                youTubePlayer.loadVideo(video_id, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
 
             @Override
@@ -225,6 +232,15 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                     if(state.equals(PlayerConstants.PlayerState.PAUSED)){
                         mSocket.emit("pauseData", gson.toJson((new PauseData(true, room_code))));
                     }
+                    // -----------
+                    else if(state.equals(PlayerConstants.PlayerState.ENDED)){
+                        postVideoDelete();
+                       getVideoData(); // 애가 문제임
+
+                        video_id = jsonVideoId;
+                        youTubePlayer.loadVideo(video_id, 0);
+                    }
+
                     mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
 
                     if(isVideoSet){
@@ -233,12 +249,11 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                         isVideoSet = false;
                     }
                 }
-
+                // --------------
                 System.out.println("확인1");
 
 
             }
-
 
 
             @Override
@@ -554,6 +569,56 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         });
 
         requestQueue.add(jsonObjReq);
+    }
+
+    private void postVideoDelete() {     // 방장의 영상이 정지하면 호출
+        String url = "http://15.164.226.229:3000/videoDelete";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.start();
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("videoId", video_id);
+            params.put("roomCode", room_code);
+            params.put("isHost", isHost);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, params,
+                response -> {
+                    //Toast.makeText(getApplicationContext(), "msg from server : " + response, Toast.LENGTH_LONG).show();
+                }, error -> {
+            //Toast.makeText(getApplicationContext(), "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq);
+    }
+
+    private void getVideoData(){     // 사용자 목록 데이터를 서버에서 받아옴
+        String media_url = "http://15.164.226.229:3000/videoDelete";
+
+        //requestQueue.start();
+        JsonObjectRequest jsonObjReq2 = new JsonObjectRequest(Request.Method.GET, media_url, null,
+                response -> {
+                    try {
+                        System.out.println("두번째 시작함");
+                         jsonVideoId= response.getString("roominfoSize");
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }, error -> {
+            //Toast.makeText(this, "fail : msg from server", Toast.LENGTH_LONG).show();
+        });
+
+        requestQueue.add(jsonObjReq2);
+
+        //여기까지
+
     }
     /*
     @Override

@@ -15,6 +15,8 @@
         <activity
             android:name=".AddRoomActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".AddVideoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".AddPlaylistActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

@@ -57,7 +57,7 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
             thumbnailUrl = data.getStringExtra("s_thumbnailUrl");
             title = data.getStringExtra("s_title");
             //System.out.println("영상 제목 짤렸는지 확인~: "+title);
-            postMedia(roomCode, title, publisher,thumbnailUrl, videoId);
+            postMedia(roomCode, title, publisher,thumbnailUrl, videoId);//받아와서 서버로 보냄
             plAdapter.addItem(new PlaylistItem(title, publisher, videoId, thumbnailUrl, roomCode));
             plAdapter.notifyDataSetChanged();
         }
