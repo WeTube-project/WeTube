@@ -41,7 +41,8 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
     private EditText code, room_title_input, host_name_input;
     boolean isCodeEntered, isTitleEntered, isHostNameEntered;
     String room_code, room_title, host_name;
-    String email = "";
+    //String email = "";
+    String userName = "";
     private void postRoom() {   // 개설된 방의 정보를 서버에 보냄
         String url = "http://15.164.226.229:3000/room";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -50,8 +51,8 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
         JSONObject params = new JSONObject();
 
         try {
-            if (email != "") {
-                params.put("email", email);
+            if (userName != "") {
+                params.put("email", userName);
             }
             params.put("roomTitle", room_title);
             params.put("hostName", host_name);
@@ -75,7 +76,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
         super.onCreate(savedInstanceState);
 
         Intent roomIntent = getIntent();
-        email = roomIntent.getStringExtra("email");
+        userName = roomIntent.getStringExtra("userName");
 
         setContentView(R.layout.activity_add_room);
 
@@ -85,6 +86,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
         code = findViewById(R.id.random_code);
         room_title_input = findViewById(R.id.room_title_input);
         host_name_input = findViewById(R.id.host_name_input);
+        host_name_input.setText(userName);
 
         left_icon.setOnClickListener(new View.OnClickListener() {   // 좌측 상단 뒤로가기 아이콘을 누르면 방 목록 액티비티로 이동
             @Override
@@ -106,7 +108,7 @@ public class AddRoomActivity extends AppCompatActivity {    // 방 개설 액티
                 intent.putExtra("roomCode", room_code);
                 intent.putExtra("hostName", host_name);
                 intent.putExtra("ActivityName", "AddRoom");
-                intent.putExtra("email", email);
+                //intent.putExtra("email", email);
                 postRoom();
                 startActivityForResult(intent, ADDROOM_REQUEST_CODE);
             }

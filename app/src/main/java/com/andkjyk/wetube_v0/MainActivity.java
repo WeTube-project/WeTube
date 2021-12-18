@@ -44,7 +44,8 @@ import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {   //방 목록 액티비티
     public static Context mContext;
-    public String email = "";
+    //public String email = "";
+    public String userName = "";
     RequestQueue requestQueue;
     private MainAdapter adapter;
     private ArrayList<RoomItem> roomItemList = new ArrayList<>();
@@ -273,9 +274,9 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
     private class FABClickListener implements View.OnClickListener {    // 우측 하단의 + 버튼을 누르면 AddRoomActivity로 이동해서 방 개설 가능
         @Override
         public void onClick(View view) {
-            if (email != "") {
+            if (userName != "") {
                 Intent intent = new Intent(MainActivity.this, AddRoomActivity.class);
-                intent.putExtra("email", email);
+                intent.putExtra("userName", userName);
                 startActivity(intent);
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -330,7 +331,7 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               String personGivenName = acct.getGivenName();
               String personFamilyName = acct.getFamilyName();
               String personEmail = acct.getEmail();
-              email = personEmail;
+              //email = personEmail;
               String personId = acct.getId();
               Uri personPhoto = acct.getPhotoUrl();
 
@@ -339,9 +340,13 @@ public class MainActivity extends AppCompatActivity {   //방 목록 액티비�
               System.out.println(personGivenName);
               System.out.println(personFamilyName);
               System.out.println(personEmail);
+              System.out.println(personEmail.indexOf('@'));
+              int endOfEmailIndex = personEmail.indexOf('@');
+              userName = personEmail.substring(0, endOfEmailIndex);
+              System.out.println(userName);
               System.out.println(personId);
               System.out.println(personPhoto);
-              postUser(personEmail);
+              postUser(userName);
             }
         } catch (ApiException e) {
             System.out.println("오류");

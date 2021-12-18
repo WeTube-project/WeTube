@@ -107,7 +107,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         Intent intent = getIntent();
         String SenderActivity = intent.getStringExtra("ActivityName");
-        String email = intent.getStringExtra("email");
+        //String email = intent.getStringExtra("email");
         if(SenderActivity.equals("AddRoom")){
             // 재생목록에 추가하는 팝업 띄우고, 확인 누르면 AddPlaylistActivity로 인텐트 보냄
             System.out.println("AddRoomActivity로부터 옴");
@@ -328,13 +328,15 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                 Bundle bundle = new Bundle();
                 bundle.putString("isHost", isHost);
                 bundle.putString("roomCode", room_code);
-                bundle.putString("email", email);
-                if(isHost.equals("true")){
-                    bundle.putString("host_name", host_name);
-                }else{
-                    bundle.putString("host_name", host_name);
-                    bundle.putString("user_name", user_name);
-                }
+                //bundle.putString("email", email);
+                bundle.putString("host_name", host_name);
+                bundle.putString("user_name", user_name);
+//                if(isHost.equals("true")){
+//                    bundle.putString("host_name", host_name);
+//                }else{
+//                    bundle.putString("host_name", host_name);
+//                    bundle.putString("user_name", user_name);
+//                }
 
                 selected.setArguments(bundle);
             }
@@ -364,6 +366,8 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         JSONObject params = new JSONObject();
 
         try {
+            //Todo: login정보를 보내기
+            //params.put("email", email);
             params.put("userName", user_name);
             params.put("roomCode", room_code);
             params.put("isHost", isHost);
@@ -533,6 +537,8 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         JSONObject params = new JSONObject();
 
         try {
+            //Todo: login정보를 보내기
+            //params.put("email", email);
             params.put("userName", user_name);
             params.put("roomCode", room_code);
             params.put("isHost", isHost);

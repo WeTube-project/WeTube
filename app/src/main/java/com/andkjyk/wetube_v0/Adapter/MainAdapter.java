@@ -125,10 +125,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 //                        alert.show();
 //                        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                         //String userName = et.getText().toString();
-                        String userName = ((MainActivity) MainActivity.mContext).email;
+                        String userName = ((MainActivity) MainActivity.mContext).userName;
                         Intent intent = new Intent(v.getContext(), RoomActivity.class);
                         System.out.println("MainAdapter - 호스트이름: "+mainList.get(pos).getHostName());
-                        intent.putExtra("email", userName);
+                        intent.putExtra("userName", userName);
                         intent.putExtra("hostName", mainList.get(pos).getHostName());
                         //intent.putExtra("userName", userName);
                         intent.putExtra("videoId", mainList.get(pos).getVideoId());
