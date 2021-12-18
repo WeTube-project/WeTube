@@ -67,7 +67,6 @@ public class PlaylistFragment extends Fragment {    // 재생 목록 fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
     }
 
     @Override
