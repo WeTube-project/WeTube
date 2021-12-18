@@ -82,7 +82,7 @@ public class RoomActivity extends AppCompatActivity implements JitsiMeetActivity
     private Gson gson = new Gson();
 
     private ImageView left_icon, share_icon;
-    Fragment frag_playlist, frag_users, frag_chat;
+    Fragment frag_playlist, frag_users, frag_chat, frag_video_chat;
     String room_title, room_code, host_name, user_name, isHost, video_id, jsonVideoId;
     public Uri profileImage;
     float _guestTimestamp;
