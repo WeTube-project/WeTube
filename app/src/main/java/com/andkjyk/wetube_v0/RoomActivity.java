@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -40,6 +41,7 @@ import com.andkjyk.wetube_v0.Model.RoomData;
 import com.andkjyk.wetube_v0.Model.RoomItem;
 import com.andkjyk.wetube_v0.Model.SyncData;
 import com.andkjyk.wetube_v0.Model.UserItem;
+import com.andkjyk.wetube_v0.Model.endData;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -98,8 +100,8 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {   // AddPlaylistActivity로 이동했다가 다시 돌아왔을 때 호출됨
         super.onActivityResult(requestCode, resultCode, data);
         if(video_id == null && isHost.equals("true")){
-            video_id = data.getStringExtra("s_videoId");
-            isVideoSet = true;
+           // video_id = data.getStringExtra("s_videoId");
+           // isVideoSet = true;
         }
     }
 
@@ -218,7 +220,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
 
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {     // 유튜브 영상을 띄움
+           public void onReady(@NonNull YouTubePlayer youTubePlayer) {     // 유튜브 영상을 띄움
                 //String videoId = video_id;
                 youTubePlayer.loadVideo(video_id, 0);    // YouTubePlayer.loadVideo(String videoId, float startTime)
             }
@@ -236,25 +238,30 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                     // -----------
                     else if(state.equals(PlayerConstants.PlayerState.ENDED)){
                         System.out.println("end video");
-                       postVideoDelete();
-                      getData();
-                       youTubePlayer.loadVideo(video_id, 0);
+                      postVideoDelete(); // 끝난 영상 영상 정보 테이블에서 지우기
+                        new Handler().postDelayed(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                getData(youTubePlayer);
+                            }
+                        }, 1000); // 1초 기다렸다가 영상 불러옴
+
                     }
 
-                    mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
-
-                   /* if(isVideoSet){
+                    if(isVideoSet){
                         System.out.println("확인2");
                         youTubePlayer.loadVideo(video_id, 0);
                         isVideoSet = false;
-                    }*/
+                    }
                 }
+
+
                 // --------------
                 System.out.println("확인1");
 
-
             }
-
 
             @Override
             public void onCurrentSecond(YouTubePlayer youTubePlayer, float second) {    // 영상의 현재 timestamp를 감지
@@ -275,15 +282,15 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                     if(_guestTimestamp % 1 == 0){
                         mSocket.on("sync", args -> {
                             SyncData data = gson.fromJson(args[0].toString(), SyncData.class);
-                            String hostVideoId = data.getVideoId();// 여기가 문제일 가능선이 다분
+                            String hostVideoId = data.getVideoId();//
                             float hostTimestamp = data.getHostTimestamp();
                             System.out.println("hostVideoId: "+hostVideoId);
-                            if(!video_id.equals(hostVideoId) && hostVideoId != null){   // if(!videoId.equals(hostVideoId))인데 둘다 null을 return하는 문제 있어서 해결 필요, 일단 false로 처리
+                            if(!video_id.equals(hostVideoId) && hostVideoId != null){
                                 System.out.println("여기 hostVideoId: + "+hostVideoId);
-                                video_id = hostVideoId;
+                             video_id = hostVideoId;
                                 isVideoSet = true;
-                                //youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
-                            } else {
+                                youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
+                            }
                                 float gap = hostTimestamp - _guestTimestamp;
                                 //System.out.println("게스트 synchronize");
 
@@ -295,7 +302,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                                     }
                                     youTubePlayer.seekTo(hostTimestamp);
                                 }
-                            }
+
                             if(isVideoSet){
                                 System.out.println("확인3");
                                 youTubePlayer.loadVideo(hostVideoId, hostTimestamp);
@@ -310,6 +317,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                                 youTubePlayer.pause();
                             }
                         });
+
                     }
                 }
             }
@@ -566,7 +574,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
     }
 
     private void postVideoDelete() {// 방장의 영상이 정지하면 호출
-        System.out.println("postVideo 호");
+        System.out.println("postVideo 호출");
         String url = "http://15.164.226.229:3000/videoDelete";
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -592,7 +600,7 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
         requestQueue.add(jsonObjReq);
     }
 
-    private void getData(){     // 재생 목록 데이터를 서버에서 가져옴
+    private void getData(YouTubePlayer youTubePlayer){     // 재생 목록 데이터를 서버에서 가져옴
         System.out.println("getData() 호출됨");
         String media_url = "http://15.164.226.229:3000/media";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -608,8 +616,10 @@ public class RoomActivity extends AppCompatActivity {   // 방에 입장하면 �
                                 JSONObject jsonObject = roominfoarr.getJSONObject(i);
                                 String title = jsonObject.getString("title");
                                 room_title = title;
-                                video_id = jsonObject.getString("videoId");
-
+                                 video_id = jsonObject.getString("videoId");
+                                float hostTimestamp =0;
+                                youTubePlayer.loadVideo(video_id, 0);
+                                mSocket.emit("syncData", gson.toJson(new SyncData(true, hostTimestamp, video_id, room_code)));
                                 System.out.println(room_code);
                                 System.out.println(rcv_roomCode);
                               System.out.println(jsonObject.getString("videoId"));
